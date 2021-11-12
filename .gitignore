@@ -1,0 +1,8 @@
+# PhpStorm
+.idea
+
+# Docker Compose
+.env
+
+# mac
+.DS_Store
