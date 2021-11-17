@@ -2,105 +2,96 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\GetOfferRequest;
+use App\Http\Requests\StoreOfferRequest;
+use App\Http\Requests\UpdateOfferRequest;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use \Symfony\Component\HttpFoundation\Response;
 use App\Models\Offer;
 
+
+
 class OfferController extends Controller
 {
-    public function index()
+    #募集取得API
+    public function index(GetOfferRequest $request)
     {
-        return 'index';
+        try {
+            $offer = Offer::where('id', '=',  $request->input('offer_id'))->firstOrFail();
+            return response()->json([Response::HTTP_OK, $offer], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([Response::HTTP_UNPROCESSABLE_ENTITY, $e], 422);
+        } catch (\Throwable $e) {
+            return response()->json([Response::HTTP_INTERNAL_SERVER_ERROR, $e], 500);
+        }
     }
 
+    #募集一覧API
     public function list()
     {
         return 'list';
     }
 
-    public function post(Request $request)
+    #募集投稿API
+    public function post(StoreOfferRequest $request)
     {
-        $rulus = [
-            'title' => ['required', 'string', 'max:50'],
-            'target' => ['nullable', 'string', 'max:255'],
-            'job' => ['nullable', 'string', 'max:255'],
-            'note' => ['nullable', 'string', 'max:255'],
-            'picture' => ['nullable', 'url', 'max:255'],
-            'link' => ['nullable', 'string', 'max:300'],
-            'user_class' => ['required', 'string', 'max:10'],
-            'end_date' => ['required', 'date_format:"Y-m-d"'],
-            'offer_tags' => ['nullable', 'array'],
-        ];
 
-        $validator = Validator::make($request->all(), $rulus);
-
-        if ($validator->fails()) {
-            return response()->json([Response::HTTP_BAD_REQUEST], 400);
-        } else {
-
-            #ユーザーがログイン状態かの判別が必要
+        # TODO: 400エラーを返す例外を実装する
+        try {
+            // トランザクションの開始
+            DB::beginTransaction();
 
             Offer::create([
-                'title' => $request->input('title'),
-                'target' => $request->input('target'),
-                'job' => $request->input('job'),
-                'note' => $request->input('note'),
-                'picture' => $request->input('picture'),
-                'link' => $request->input('link'),
+                'title'      => $request->input('title'),
+                'target'     => $request->input('target'),
+                'job'        => $request->input('job'),
+                'note'       => $request->input('note'),
+                'picture'    => $request->input('picture'),
+                'link'       => $request->input('link'),
                 'user_class' => $request->input('user_class'),
-                'end_date' => $request->input('end_date'),
+                'end_date'   => $request->input('end_date'),
                 'offer_tags' => $request->input('offer_tags'),
             ]);
 
+            // 全ての保存処理が成功したので処理を確定する
+            DB::commit();
+
             return response()->json(Response::HTTP_OK, 200);
+        } catch (\Throwable $e) {
+            // 例外が起きたらロールバックを行う
+            DB::rollback();
+
+            return response()->json([Response::HTTP_INTERNAL_SERVER_ERROR, $e], 500);
         }
     }
 
-    public function edit(Request $request)
+    #募集編集API
+    public function edit(UpdateOfferRequest $request)
     {
-        $rulus = [
-            'offer_id' => ['required', 'integer'],
-            'title' => ['required', 'string', 'max:50'],
-            'target' => ['nullable', 'string', 'max:255'],
-            'job' => ['nullable', 'string', 'max:255'],
-            'note' => ['nullable', 'string', 'max:255'],
-            'picture' => ['nullable', 'url', 'max:255'],
-            'link' => ['nullable', 'string', 'max:300'],
-            'user_class' => ['required', 'string', 'max:10'],
-            'end_date' => ['required', 'date_format:"Y-m-d"'],
-            'offer_tags' => ['nullable', 'array'],
-        ];
 
-        $validator = Validator::make($request->all(), $rulus);
+        Offer::where('id', '=',  $request->input('offer_id'))->update([
+            'title'      => $request->input('title'),
+            'target'     => $request->input('target'),
+            'job'        => $request->input('job'),
+            'note'       => $request->input('note'),
+            'picture'    => $request->input('picture'),
+            'link'       => $request->input('link'),
+            'user_class' => $request->input('user_class'),
+            'end_date'   => $request->input('end_date'),
+            'offer_tags' => $request->input('offer_tags'),
+        ]);
 
-        if ($validator->fails()) {
-            return response()->json([Response::HTTP_BAD_REQUEST], 400);
-        } else {
-
-            #ユーザーがログイン状態かの判別が必要
-
-            Offer::where('id', '=',  $request->input('offer_id'))->update([
-                'title' => $request->input('title'),
-                'target' => $request->input('target'),
-                'job' => $request->input('job'),
-                'note' => $request->input('note'),
-                'picture' => $request->input('picture'),
-                'link' => $request->input('link'),
-                'user_class' => $request->input('user_class'),
-                'end_date' => $request->input('end_date'),
-                'offer_tags' => $request->input('offer_tags'),
-            ]);
-
-            return response()->json(Response::HTTP_OK, 200);
-        }
+        return response()->json(Response::HTTP_OK, 200);
     }
 
+    #募集削除API
     public function delete()
     {
         return 'delete';
     }
 
+    #応募投稿API
     public function apply()
     {
         return 'apply';
