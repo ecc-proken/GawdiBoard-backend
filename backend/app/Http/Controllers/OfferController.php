@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GetOfferRequest;
+use App\Http\Requests\GetOffersRequest;
 use App\Http\Requests\StoreOfferRequest;
 use App\Http\Requests\UpdateOfferRequest;
 use Illuminate\Support\Facades\DB;
@@ -18,31 +19,37 @@ class OfferController extends Controller
     public function index(GetOfferRequest $request)
     {
         try {
-            $offer = Offer::where('id', '=',  $request->input('offer_id'))->firstOrFail();
-            return response()->json([Response::HTTP_OK, $offer], 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([Response::HTTP_UNPROCESSABLE_ENTITY, $e], 422);
-        } catch (\Throwable $e) {
-            return response()->json([Response::HTTP_INTERNAL_SERVER_ERROR, $e], 500);
+            $fetched_offer = Offer::where('id', '=',  $request->input('offer_id'))->firstOrFail();
+            return response()->json([Response::HTTP_OK, $fetched_offer], 200);
+        } catch (ModelNotFoundException $exception) {
+            return response()->json([Response::HTTP_UNPROCESSABLE_ENTITY, $exception], 422);
+        } catch (\Throwable $exception) {
+            return response()->json([Response::HTTP_INTERNAL_SERVER_ERROR, $exception], 500);
         }
     }
 
     #募集一覧API
-    public function list()
+    public function list(GetOffersRequest $request)
     {
-        return 'list';
+        try {
+            $fetched_offers = Offer::where('id', '=',  $request->input('offer_tag_id'))->all();
+            return response()->json([Response::HTTP_OK, $fetched_offers], 200);
+        } catch (ModelNotFoundException $exception) {
+            return response()->json([Response::HTTP_UNPROCESSABLE_ENTITY, $exception], 422);
+        } catch (\Throwable $exception) {
+            return response()->json([Response::HTTP_INTERNAL_SERVER_ERROR, $exception], 500);
+        }
     }
 
     #募集投稿API
     public function post(StoreOfferRequest $request)
     {
 
-        # TODO: 400エラーを返す例外を実装する
         try {
             // トランザクションの開始
             DB::beginTransaction();
 
-            Offer::create([
+            $created_offer = Offer::create([
                 'title'      => $request->input('title'),
                 'target'     => $request->input('target'),
                 'job'        => $request->input('job'),
@@ -57,12 +64,12 @@ class OfferController extends Controller
             // 全ての保存処理が成功したので処理を確定する
             DB::commit();
 
-            return response()->json(Response::HTTP_OK, 200);
-        } catch (\Throwable $e) {
+            return response()->json([Response::HTTP_OK, $created_offer], 200);
+        } catch (\Throwable $exception) {
             // 例外が起きたらロールバックを行う
             DB::rollback();
 
-            return response()->json([Response::HTTP_INTERNAL_SERVER_ERROR, $e], 500);
+            return response()->json([Response::HTTP_INTERNAL_SERVER_ERROR, $exception], 500);
         }
     }
 
@@ -70,19 +77,32 @@ class OfferController extends Controller
     public function edit(UpdateOfferRequest $request)
     {
 
-        Offer::where('id', '=',  $request->input('offer_id'))->update([
-            'title'      => $request->input('title'),
-            'target'     => $request->input('target'),
-            'job'        => $request->input('job'),
-            'note'       => $request->input('note'),
-            'picture'    => $request->input('picture'),
-            'link'       => $request->input('link'),
-            'user_class' => $request->input('user_class'),
-            'end_date'   => $request->input('end_date'),
-            'offer_tags' => $request->input('offer_tags'),
-        ]);
+        try {
+            // トランザクションの開始
+            DB::beginTransaction();
 
-        return response()->json(Response::HTTP_OK, 200);
+            $updated_offer = Offer::where('id', '=',  $request->input('offer_id'))->update([
+                'title'      => $request->input('title'),
+                'target'     => $request->input('target'),
+                'job'        => $request->input('job'),
+                'note'       => $request->input('note'),
+                'picture'    => $request->input('picture'),
+                'link'       => $request->input('link'),
+                'user_class' => $request->input('user_class'),
+                'end_date'   => $request->input('end_date'),
+                'offer_tags' => $request->input('offer_tags'),
+            ]);
+
+            // 全ての保存処理が成功したので処理を確定する
+            DB::commit();
+
+            return response()->json([Response::HTTP_OK, $updated_offer], 200);
+        } catch (\Throwable $exception) {
+            // 例外が起きたらロールバックを行う
+            DB::rollback();
+
+            return response()->json([Response::HTTP_INTERNAL_SERVER_ERROR, $exception], 500);
+        }
     }
 
     #募集削除API
