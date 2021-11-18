@@ -9,6 +9,7 @@ ECC コンピュータ専門学校専用の掲示板サイトです。
 ```bash
 $ git clone https://github.com/ecc-proken/GawdiBoard-backend.git
 $ cd GawdiBoard-backend
+$ git config core.hooksPath .githooks
 $ make init
 ```
 
