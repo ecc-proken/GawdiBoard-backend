@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Http\Requests\DestroyOfferRequest;
 use App\Http\Requests\GetOfferRequest;
 use App\Http\Requests\GetOffersRequest;
@@ -11,8 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use \Symfony\Component\HttpFoundation\Response;
 use App\Models\Offer;
-
-
+use App\Http\Resources\OfferResource;
 
 class OfferController extends Controller
 {
@@ -20,18 +20,13 @@ class OfferController extends Controller
     public function index(GetOfferRequest $request)
     {
         try {
-            $fetched_offer = Offer::findOrFail($request->input('offer_id'));
-
-            $tags = Offer::find(1)->tags()->get();
-
-            foreach ($fetched_offer->tags as $tag) {
-                echo $tag->pivot->created_at;
-            }
+            $fetched_offer = Offer::with(['tags', 'tags.genres', 'tags.targets'])
+                ->findOrFail($request->input('offer_id'));
 
             return response()->json(
                 [
-                    "offer" => $fetched_offer,
-                    "tags" => $tags
+                    # APIResoueceでそのまま返してもいいけどステータスコードもつけられるのかわからん
+                    "offer" => new OfferResource($fetched_offer)
                 ],
                 Response::HTTP_OK
             );
