@@ -17,7 +17,7 @@ class CreateTagsTable extends Migration
             $table->id();
             $table->string('tag_name');
             $table->foreignId('tag_genre_id')->constrained();
-            $table->foreignId('tag_target_id')->constrained();
+            $table->foreignId('tag_target_id')->constrained()->nullable();
         });
     }
 
