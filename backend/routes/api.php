@@ -39,11 +39,11 @@ Route::group(['prefix' => 'promotion', 'as' => 'promotion.'], function () {
 
 // 作品APIグループ
 Route::group(['prefix' => 'work', 'as' => 'work.'], function () {
-    Route::get('/', 'OfferController@index')->name('index');
-    Route::get('list', 'OfferController@list')->name('list');
-    Route::post('post', 'OfferController@post')->name('post');
-    Route::post('edit', 'OfferController@edit')->name('edit');
-    Route::post('delete', 'OfferController@delete')->name('delete');
+    Route::get('/', 'WorkController@index')->name('index');
+    Route::get('list', 'WorkController@list')->name('list');
+    Route::post('post', 'WorkController@post')->name('post');
+    Route::post('edit', 'WorkController@edit')->name('edit');
+    Route::post('delete', 'WorkController@delete')->name('delete');
 });
 
 // ユーザーAPIグル-プ
