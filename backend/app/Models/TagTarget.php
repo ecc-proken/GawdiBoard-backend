@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class TagTarget extends Model
 {
     use HasFactory;
+    protected $guarded = [];
+    public $timestamps = false; 
 }
