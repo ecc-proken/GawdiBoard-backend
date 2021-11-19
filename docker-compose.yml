@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.9'
 volumes:
   php-fpm-socket:
   db-store:
@@ -68,12 +68,9 @@ services:
         target: /var/lib/mysql
         volume:
           nocopy: true
-    volumes:
       - type: volume
         source: db-log
         target: /var/log/mysql
-        volume:
-          nocopy: true
     environment:
       - MYSQL_DATABASE=${DB_NAME:-laravel_local}
       - MYSQL_USER=${DB_USER:-phper}
