@@ -10,6 +10,10 @@ class Offer extends Model
     use HasFactory;
 
     protected $guarded = [];
-
     public $timestamps = false;
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, "offer_tags");
+    }
 }

@@ -21,16 +21,24 @@ class OfferController extends Controller
     {
         try {
             $fetched_offer = Offer::findOrFail($request->input('offer_id'));
+
+            $tags = Offer::find(1)->tags()->get();
+
+            foreach ($fetched_offer->tags as $tag) {
+                echo $tag->pivot->created_at;
+            }
+
             return response()->json(
                 [
-                    "offer" => $fetched_offer
+                    "offer" => $fetched_offer,
+                    "tags" => $tags
                 ],
                 Response::HTTP_OK
             );
         } catch (ModelNotFoundException $exception) {
             return response()->json(
                 [
-                    "message" => "id was not exists"
+                    "message" => "not exists"
                 ],
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
@@ -57,7 +65,7 @@ class OfferController extends Controller
         } catch (ModelNotFoundException $exception) {
             return response()->json(
                 [
-                    "message" => "id was not exists"
+                    "message" => "not exists"
                 ],
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
@@ -73,7 +81,6 @@ class OfferController extends Controller
     #募集投稿API
     public function post(StoreOfferRequest $request)
     {
-
         try {
             // トランザクションの開始
             DB::beginTransaction();
@@ -146,7 +153,7 @@ class OfferController extends Controller
         } catch (ModelNotFoundException $exception) {
             return response()->json(
                 [
-                    "message" => "id was not exists"
+                    "message" => "not exists"
                 ],
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
@@ -178,7 +185,7 @@ class OfferController extends Controller
         } catch (ModelNotFoundException $exception) {
             return response()->json(
                 [
-                    "message" => "id was not exists"
+                    "message" => "not exists"
                 ],
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
