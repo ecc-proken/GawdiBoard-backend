@@ -14,7 +14,6 @@ class TagTargetsTableSeeder extends Seeder
      */
     public function run()
     {
-        //IT,WEB,GAME
         $arr = ['IT', 'WEB', 'GAME'];
         
         foreach($arr as $value){
