@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DestroyOfferRequest;
 use App\Http\Requests\GetOfferRequest;
 use App\Http\Requests\GetOffersRequest;
 use App\Http\Requests\StoreOfferRequest;
@@ -19,12 +20,26 @@ class OfferController extends Controller
     public function index(GetOfferRequest $request)
     {
         try {
-            $fetched_offer = Offer::where('id', '=',  $request->input('offer_id'))->firstOrFail();
-            return response()->json([Response::HTTP_OK, $fetched_offer], 200);
+            $fetched_offer = Offer::findOrFail($request->input('offer_id'));
+            return response()->json(
+                [
+                    "offer" => $fetched_offer
+                ],
+                Response::HTTP_OK
+            );
         } catch (ModelNotFoundException $exception) {
-            return response()->json([Response::HTTP_UNPROCESSABLE_ENTITY, $exception], 422);
+            return response()->json(
+                [
+                    "message" => "id was not exists"
+                ],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
         } catch (\Throwable $exception) {
-            return response()->json([Response::HTTP_INTERNAL_SERVER_ERROR, $exception], 500);
+            echo $exception->getMessage();
+            return response()->json(
+                $exception,
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -32,12 +47,26 @@ class OfferController extends Controller
     public function list(GetOffersRequest $request)
     {
         try {
-            $fetched_offers = Offer::where('id', '=',  $request->input('offer_tag_id'))->all();
-            return response()->json([Response::HTTP_OK, $fetched_offers], 200);
+            $fetched_offers = Offer::all();
+            return response()->json(
+                [
+                    "offers" => $fetched_offers
+                ],
+                Response::HTTP_OK
+            );
         } catch (ModelNotFoundException $exception) {
-            return response()->json([Response::HTTP_UNPROCESSABLE_ENTITY, $exception], 422);
+            return response()->json(
+                [
+                    "message" => "id was not exists"
+                ],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
         } catch (\Throwable $exception) {
-            return response()->json([Response::HTTP_INTERNAL_SERVER_ERROR, $exception], 500);
+            echo $exception->getMessage();
+            return response()->json(
+                $exception,
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -49,27 +78,39 @@ class OfferController extends Controller
             // トランザクションの開始
             DB::beginTransaction();
 
+            #TODO : 学籍番号をなんとかする
+            #TODO : offer_tagsでJOINを行う
             $created_offer = Offer::create([
-                'title'      => $request->input('title'),
-                'target'     => $request->input('target'),
-                'job'        => $request->input('job'),
-                'note'       => $request->input('note'),
-                'picture'    => $request->input('picture'),
-                'link'       => $request->input('link'),
-                'user_class' => $request->input('user_class'),
-                'end_date'   => $request->input('end_date'),
-                'offer_tags' => $request->input('offer_tags'),
+                'title'          => $request->input('title'),
+                'target'         => $request->input('target'),
+                'job'            => $request->input('job'),
+                'note'           => $request->input('note'),
+                'picture'        => $request->input('picture'),
+                'link'           => $request->input('link'),
+                'user_class'     => $request->input('user_class'),
+                'post_date'      => now()->format('Y-m-y'),
+                'end_date'       => $request->input('end_date'),
+                'student_number' => 2180418,
             ]);
 
             // 全ての保存処理が成功したので処理を確定する
             DB::commit();
 
-            return response()->json([Response::HTTP_OK, $created_offer], 200);
+            return response()->json(
+                [
+                    "offer" => $created_offer
+                ],
+                Response::HTTP_OK
+            );
         } catch (\Throwable $exception) {
             // 例外が起きたらロールバックを行う
             DB::rollback();
-
-            return response()->json([Response::HTTP_INTERNAL_SERVER_ERROR, $exception], 500);
+            return response()->json(
+                [
+                    $exception
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -81,34 +122,74 @@ class OfferController extends Controller
             // トランザクションの開始
             DB::beginTransaction();
 
-            $updated_offer = Offer::where('id', '=',  $request->input('offer_id'))->update([
-                'title'      => $request->input('title'),
-                'target'     => $request->input('target'),
-                'job'        => $request->input('job'),
-                'note'       => $request->input('note'),
-                'picture'    => $request->input('picture'),
-                'link'       => $request->input('link'),
-                'user_class' => $request->input('user_class'),
-                'end_date'   => $request->input('end_date'),
-                'offer_tags' => $request->input('offer_tags'),
-            ]);
+            # update()メソッドを使うと戻り値が「変更されたレコード数」になるため使えません
+
+            $updated_offer = Offer::findOrFail($request->input('offer_id'));
+            $updated_offer->title      = $request->input('title');
+            $updated_offer->target     = $request->input('target');
+            $updated_offer->job        = $request->input('job');
+            $updated_offer->note       = $request->input('note');
+            $updated_offer->picture    = $request->input('picture');
+            $updated_offer->link       = $request->input('link');
+            $updated_offer->user_class = $request->input('user_class');
+            $updated_offer->end_date   = $request->input('end_date');
+            $updated_offer->save();
 
             // 全ての保存処理が成功したので処理を確定する
             DB::commit();
-
-            return response()->json([Response::HTTP_OK, $updated_offer], 200);
+            return response()->json(
+                [
+                    "offer" => $updated_offer
+                ],
+                Response::HTTP_OK
+            );
+        } catch (ModelNotFoundException $exception) {
+            return response()->json(
+                [
+                    "message" => "id was not exists"
+                ],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
         } catch (\Throwable $exception) {
             // 例外が起きたらロールバックを行う
             DB::rollback();
-
-            return response()->json([Response::HTTP_INTERNAL_SERVER_ERROR, $exception], 500);
+            return response()->json(
+                [
+                    $exception
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 
     #募集削除API
-    public function delete()
+    public function delete(DestroyOfferRequest $request)
     {
-        return 'delete';
+        try {
+            $destroy_offer = Offer::findOrFail($request->input('offer_id'));
+            $destroy_offer::destroy($request->input('offer_id'));
+
+            return response()->json(
+                [
+                    "offer" => $destroy_offer
+                ],
+                Response::HTTP_OK
+            );
+        } catch (ModelNotFoundException $exception) {
+            return response()->json(
+                [
+                    "message" => "id was not exists"
+                ],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        } catch (\Throwable $exception) {
+            // 例外が起きたらロールバックを行う
+            DB::rollback();
+            return response()->json(
+                $exception,
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     #応募投稿API

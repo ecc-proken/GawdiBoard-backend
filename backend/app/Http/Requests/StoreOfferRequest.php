@@ -13,7 +13,8 @@ class StoreOfferRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        # TODO: ユーザー認証が出来次第ロジックを記入
+        return true;
     }
 
     /**
@@ -31,7 +32,7 @@ class StoreOfferRequest extends FormRequest
             'picture'    => ['nullable', 'url',    'max:255'],
             'link'       => ['nullable', 'string', 'max:300'],
             'user_class' => ['required', 'string', 'max:10'],
-            'end_date'   => ['required', 'date_format:"Y-m-d"'],
+            'end_date'   => ['required', 'after::today', 'date_format:"Y-m-d"'],
             'offer_tags' => ['nullable', 'array'],
         ];
     }

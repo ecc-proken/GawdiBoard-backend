@@ -13,7 +13,8 @@ class GetOffersRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        # TODO: ユーザー認証が出来次第ロジックを記入
+        return true;
     }
 
     /**
