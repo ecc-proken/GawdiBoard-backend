@@ -18,7 +18,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
 // 募集APIグループ
 Route::group(['prefix' => 'offer', 'as' => 'offer.'], function () {
     Route::get('/', 'OfferController@index')->name('index');
