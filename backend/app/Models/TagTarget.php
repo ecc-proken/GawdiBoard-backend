@@ -9,5 +9,5 @@ class TagTarget extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    public $timestamps = false; 
+    public $timestamps = false;
 }
