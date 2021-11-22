@@ -12,6 +12,14 @@ class TagResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
+
+    /**
+     * 適用する「データ」ラッパー
+     *
+     * @var string
+     */
+    public static $wrap = 'tags';
+
     public function toArray($request)
     {
         return [

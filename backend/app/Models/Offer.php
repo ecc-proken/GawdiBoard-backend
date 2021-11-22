@@ -10,7 +10,7 @@ class Offer extends Model
     use HasFactory;
 
     protected $guarded = [];
-    # povotはレスポンスに必要ないので非表示
+    # レスポンスに必要ない情報を非表示
     protected $hidden = array('pivot');
     public $timestamps = false;
 
@@ -21,5 +21,9 @@ class Offer extends Model
         return $this->belongsToMany(Tag::class, "offer_tags");
     }
 
-    #TODO : 募集に紐づいたユーザーを取得
+    # 募集に紐づいたユーザーを取得
+    public function users()
+    {
+        return $this->belongsTo(User::class, "student_number");
+    }
 }

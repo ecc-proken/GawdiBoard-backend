@@ -12,6 +12,13 @@ class UserResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
+
+    /**
+     * 適用する「データ」ラッパー
+     *
+     * @var string
+     */
+    public static $wrap = 'user';
     public function toArray($request)
     {
         return [

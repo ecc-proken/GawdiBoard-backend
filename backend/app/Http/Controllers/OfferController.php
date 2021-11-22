@@ -13,6 +13,13 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use \Symfony\Component\HttpFoundation\Response;
 use App\Models\Offer;
 use App\Http\Resources\OfferResource;
+use App\Http\Resources\OfferCollection;
+
+/*
+    TODO: ログインユーザーの学籍番号を取得する
+    TODO: 認証の是非でレスポンスを分ける
+    TODO: 応募投稿APIの作成
+*/
 
 class OfferController extends Controller
 {
@@ -20,28 +27,25 @@ class OfferController extends Controller
     public function index(GetOfferRequest $request)
     {
         try {
-            $fetched_offer = Offer::with(['tags', 'tags.genres', 'tags.targets'])
+            $fetched_offer = Offer::with([
+                'tags',
+                'tags.genres',
+                'tags.targets',
+                'users'
+            ])
                 ->findOrFail($request->input('offer_id'));
 
-            return response()->json(
-                [
-                    # APIResoueceでそのまま返してもいいけどステータスコードもつけられるのかわからん
-                    "offer" => new OfferResource($fetched_offer)
-                ],
-                Response::HTTP_OK
-            );
+            return new OfferResource($fetched_offer);
         } catch (ModelNotFoundException $exception) {
             return response()->json(
-                [
-                    "message" => "not exists"
-                ],
+                $exception,
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         } catch (\Throwable $exception) {
             echo $exception->getMessage();
             return response()->json(
                 $exception,
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                Response::HTTP_BAD_REQUEST
             );
         }
     }
@@ -50,25 +54,33 @@ class OfferController extends Controller
     public function list(GetOffersRequest $request)
     {
         try {
-            $fetched_offers = Offer::all();
-            return response()->json(
-                [
-                    "offers" => $fetched_offers
-                ],
-                Response::HTTP_OK
-            );
+            $Offer_tags = $request->input('offer_tag_ids');
+            $fetched_offers = Offer::with(['tags', 'tags.genres', 'tags.targets', 'users']);
+
+            # 募集タグ配列が空の場合は何もしない
+            if (is_array($Offer_tags) && !empty($Offer_tags)) {
+                $fetched_offers = $fetched_offers
+                    ->WhereHas('tags', function ($query) use ($Offer_tags) {
+                        $query->wherein('tags.id', $Offer_tags);
+                    });
+            }
+
+            # page番号 * 30件のデータを最新順で取得
+            $fetched_offers = $fetched_offers
+                ->latest('post_date')
+                ->paginate(30);
+
+            return new OfferCollection($fetched_offers);
         } catch (ModelNotFoundException $exception) {
             return response()->json(
-                [
-                    "message" => "not exists"
-                ],
+                $exception,
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         } catch (\Throwable $exception) {
             echo $exception->getMessage();
             return response()->json(
                 $exception,
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                Response::HTTP_BAD_REQUEST
             );
         }
     }
@@ -80,38 +92,33 @@ class OfferController extends Controller
             // トランザクションの開始
             DB::beginTransaction();
 
-            #TODO : 学籍番号をなんとかする
-            #TODO : offer_tagsでJOINを行う
-            $created_offer = Offer::create([
-                'title'          => $request->input('title'),
-                'target'         => $request->input('target'),
-                'job'            => $request->input('job'),
-                'note'           => $request->input('note'),
-                'picture'        => $request->input('picture'),
-                'link'           => $request->input('link'),
-                'user_class'     => $request->input('user_class'),
-                'post_date'      => now()->format('Y-m-y'),
-                'end_date'       => $request->input('end_date'),
-                'student_number' => 2180418,
-            ]);
+            $created_offer = new Offer();
+            $created_offer->title          = $request->input('title');
+            $created_offer->target         = $request->input('target');
+            $created_offer->job            = $request->input('job');
+            $created_offer->note           = $request->input('note');
+            $created_offer->picture        = $request->input('picture');
+            $created_offer->link           = $request->input('link');
+            $created_offer->user_class     = $request->input('user_class');
+            $created_offer->post_date      = now()->format('Y-m-y');
+            $created_offer->end_date       = $request->input('end_date');
+            $created_offer->student_number = 2180418;
+            $created_offer->save();
+            $created_offer->tags()->sync($request->input('offer_tag_ids'));
 
             // 全ての保存処理が成功したので処理を確定する
             DB::commit();
 
-            return response()->json(
-                [
-                    "offer" => $created_offer
-                ],
-                Response::HTTP_OK
-            );
+            // リレーションを更新
+            $created_offer->load('tags');
+
+            return new OfferResource($created_offer);
         } catch (\Throwable $exception) {
             // 例外が起きたらロールバックを行う
             DB::rollback();
             return response()->json(
-                [
-                    $exception
-                ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $exception,
+                Response::HTTP_BAD_REQUEST
             );
         }
     }
@@ -119,14 +126,17 @@ class OfferController extends Controller
     #募集編集API
     public function edit(UpdateOfferRequest $request)
     {
-
         try {
             // トランザクションの開始
             DB::beginTransaction();
 
-            # update()メソッドを使うと戻り値が「変更されたレコード数」になるため使えません
-
-            $updated_offer = Offer::findOrFail($request->input('offer_id'));
+            $updated_offer = Offer::with([
+                'tags',
+                'tags.genres',
+                'tags.targets',
+                'users'
+            ])
+                ->findOrFail($request->input('offer_id'));
             $updated_offer->title      = $request->input('title');
             $updated_offer->target     = $request->input('target');
             $updated_offer->job        = $request->input('job');
@@ -135,31 +145,27 @@ class OfferController extends Controller
             $updated_offer->link       = $request->input('link');
             $updated_offer->user_class = $request->input('user_class');
             $updated_offer->end_date   = $request->input('end_date');
+            $updated_offer->tags()->sync($request->input('offer_tag_ids'));
             $updated_offer->save();
 
             // 全ての保存処理が成功したので処理を確定する
             DB::commit();
-            return response()->json(
-                [
-                    "offer" => $updated_offer
-                ],
-                Response::HTTP_OK
-            );
+
+            // リレーションを更新
+            $updated_offer->load('tags');
+
+            return new OfferResource($updated_offer);
         } catch (ModelNotFoundException $exception) {
             return response()->json(
-                [
-                    "message" => "not exists"
-                ],
+                $exception,
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         } catch (\Throwable $exception) {
             // 例外が起きたらロールバックを行う
             DB::rollback();
             return response()->json(
-                [
-                    $exception
-                ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $exception,
+                Response::HTTP_BAD_REQUEST
             );
         }
     }
@@ -168,20 +174,18 @@ class OfferController extends Controller
     public function delete(DestroyOfferRequest $request)
     {
         try {
+            DB::beginTransaction();
+            #中間テーブルとの関連削除も行う
             $destroy_offer = Offer::findOrFail($request->input('offer_id'));
+            $destroy_offer->tags()->detach();
             $destroy_offer::destroy($request->input('offer_id'));
 
-            return response()->json(
-                [
-                    "offer" => $destroy_offer
-                ],
-                Response::HTTP_OK
-            );
+            DB::commit();
+
+            return http_response_code();
         } catch (ModelNotFoundException $exception) {
             return response()->json(
-                [
-                    "message" => "not exists"
-                ],
+                $exception,
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         } catch (\Throwable $exception) {
@@ -189,7 +193,7 @@ class OfferController extends Controller
             DB::rollback();
             return response()->json(
                 $exception,
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                Response::HTTP_BAD_REQUEST
             );
         }
     }

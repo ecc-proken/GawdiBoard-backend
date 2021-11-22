@@ -25,16 +25,17 @@ class UpdateOfferRequest extends FormRequest
     public function rules()
     {
         return [
-            'offer_id'   => ['required', 'integer'],
-            'title'      => ['required', 'string', 'max:50'],
-            'target'     => ['nullable', 'string', 'max:255'],
-            'job'        => ['nullable', 'string', 'max:255'],
-            'note'       => ['nullable', 'string', 'max:255'],
-            'picture'    => ['nullable', 'url',    'max:255'],
-            'link'       => ['nullable', 'string', 'max:300'],
-            'user_class' => ['required', 'string', 'max:10'],
-            'end_date'   => ['required', 'after::today', 'date_format:"Y-m-d"'],
-            'offer_tags' => ['nullable', 'array'],
+            'offer_id'        => ['required', 'integer'],
+            'title'           => ['required', 'string', 'max:50'],
+            'target'          => ['nullable', 'string', 'max:255'],
+            'job'             => ['nullable', 'string', 'max:255'],
+            'note'            => ['nullable', 'string', 'max:255'],
+            'picture'         => ['nullable', 'url',    'max:255'],
+            'link'            => ['nullable', 'string', 'max:300'],
+            'user_class'      => ['required', 'string', 'max:10'],
+            'end_date'        => ['required', 'after::today', 'date_format:"Y-m-d"'],
+            'offer_tag_ids'   => ['nullable', 'array'],
+            'offer_tag_ids.*' => ['integer',  'min:1'],
         ];
     }
 }

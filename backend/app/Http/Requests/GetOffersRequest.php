@@ -26,7 +26,8 @@ class GetOffersRequest extends FormRequest
     {
         return [
             'offer_tag_ids'   => ['nullable', 'array'],
-            'page'   => ['required', 'integer']
+            'offer_tag_ids.*' => ['integer', 'min:1'],
+            'page'            => ['required', 'integer']
         ];
     }
 }
