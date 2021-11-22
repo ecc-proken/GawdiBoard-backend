@@ -16,7 +16,6 @@ class CreateTagTargetsTable extends Migration
         Schema::create('tag_targets', function (Blueprint $table) {
             $table->id();
             $table->string('target_name');
-
         });
     }
 

@@ -1,0 +1,41 @@
+#!/bin/sh
+
+check_php_syntax()
+{
+  for file in $@; do
+    php -l ${file}
+    if [ $? -ne 0 ]; then
+      printf "\n\033[0;31mInvalid syntax detected. Aborting commit...\033[0m\n"
+      exit 1
+    fi
+  done
+}
+
+format_php_file()
+{
+  ${laravel_working_dir}/vendor/bin/php-cs-fixer fix --config=${laravel_working_dir}/.php-cs-fixer.dist.php $@ >/dev/null 2>&1
+  git add $@
+}
+
+if git rev-parse --verify HEAD >/dev/null 2>&1; then
+  against=HEAD
+else
+  # コミットがひとつもなかったら空のツリーとdiffを取る
+  against=$(git hash-object -t tree /dev/null)
+fi
+
+laravel_working_dir=$(git rev-parse --show-toplevel)/backend
+modified_php_files=$(git diff-index --name-only --cached --diff-filter=AM ${against} ${laravel_working_dir} | grep -E '^.*\.php$')
+
+# /backend配下にステージングされたphpファイルがある時だけ捌く
+if [ -n "${modified_php_files}" ]; then
+  # phpの文法エラーがあったらコミットやめる
+  printf "Checking syntax of staged php files...\n"
+  check_php_syntax ${modified_php_files}
+
+  # ステージングされたphpファイルを全部整形してgit addし直す
+  printf "\nNo syntax error detected. Formatting staged php files with php-cs-fixer...\n"
+  printf "Formatting target:\n${modified_php_files}\n"
+  format_php_file ${modified_php_files}
+  printf "\nFinished formatting. All files are staged again to commit the formatted version.\n"
+fi
