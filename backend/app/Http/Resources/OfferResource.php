@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\TagResource;
 
 class OfferResource extends JsonResource
 {
@@ -24,19 +23,19 @@ class OfferResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "id"             => $this->id,
-            "title"          => $this->title,
-            "target"         => $this->target,
-            "job"            => $this->job,
-            "note"           => $this->note,
-            "picture"        => $this->picture,
-            "link"           => $this->link,
-            "post_date"      => $this->post_date,
-            "end_date"       => $this->end_date,
-            "student_number" => $this->student_number,
-            "user_name"      => $this->users->user_name,
-            "user_class"     => $this->user_class,
-            'tags'           => TagResource::collection($this->whenLoaded("tags")),
+            'id' => $this->id,
+            'title' => $this->title,
+            'target' => $this->target,
+            'job' => $this->job,
+            'note' => $this->note,
+            'picture' => $this->picture,
+            'link' => $this->link,
+            'post_date' => $this->post_date,
+            'end_date' => $this->end_date,
+            'student_number' => $this->student_number,
+            'user_name' => $this->users->user_name,
+            'user_class' => $this->user_class,
+            'tags' => TagResource::collection($this->whenLoaded('tags')),
         ];
     }
 }

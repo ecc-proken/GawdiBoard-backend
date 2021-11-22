@@ -19,15 +19,16 @@ class UserResource extends JsonResource
      * @var string
      */
     public static $wrap = 'user';
+
     public function toArray($request)
     {
         return [
-            'student_number'    => $this->student_number,
-            'user_name'         => $this->user_name,
-            'email'             => $this->email,
-            'link'              => $this->link,
+            'student_number' => $this->student_number,
+            'user_name' => $this->user_name,
+            'email' => $this->email,
+            'link' => $this->link,
             'self_introduction' => $this->self_introduction,
-            'create_at '        => $this->create_at,
+            'create_at ' => $this->create_at,
         ];
     }
 }

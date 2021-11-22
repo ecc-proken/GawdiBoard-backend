@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Requests\DestroyOfferRequest;
 use App\Http\Requests\GetOfferRequest;
 use App\Http\Requests\GetOffersRequest;
@@ -19,6 +18,7 @@ use App\Http\Resources\OfferCollection;
     TODO: ログインユーザーの学籍番号を取得する
     TODO: 認証の是非でレスポンスを分ける
     TODO: 応募投稿APIの作成
+    TODO: カスタムexceptionを作成して適用する
 */
 
 class OfferController extends Controller
@@ -31,7 +31,7 @@ class OfferController extends Controller
                 'tags',
                 'tags.genres',
                 'tags.targets',
-                'users'
+                'users',
             ])
                 ->findOrFail($request->input('offer_id'));
 
@@ -43,6 +43,7 @@ class OfferController extends Controller
             );
         } catch (\Throwable $exception) {
             echo $exception->getMessage();
+
             return response()->json(
                 $exception,
                 Response::HTTP_BAD_REQUEST
@@ -54,14 +55,19 @@ class OfferController extends Controller
     public function list(GetOffersRequest $request)
     {
         try {
-            $Offer_tags = $request->input('offer_tag_ids');
-            $fetched_offers = Offer::with(['tags', 'tags.genres', 'tags.targets', 'users']);
+            $offer_tags = $request->input('offer_tag_ids');
+            $fetched_offers = Offer::with([
+                'tags',
+                'tags.genres',
+                'tags.targets',
+                'users',
+            ]);
 
             # 募集タグ配列が空の場合は何もしない
-            if (is_array($Offer_tags) && !empty($Offer_tags)) {
+            if (is_array($offer_tags) && !empty($offer_tags)) {
                 $fetched_offers = $fetched_offers
-                    ->WhereHas('tags', function ($query) use ($Offer_tags) {
-                        $query->wherein('tags.id', $Offer_tags);
+                    ->whereHas('tags', function ($query) use ($offer_tags) {
+                        $query->whereIn('tags.id', $offer_tags);
                     });
             }
 
@@ -71,13 +77,7 @@ class OfferController extends Controller
                 ->paginate(30);
 
             return new OfferCollection($fetched_offers);
-        } catch (ModelNotFoundException $exception) {
-            return response()->json(
-                $exception,
-                Response::HTTP_UNPROCESSABLE_ENTITY
-            );
         } catch (\Throwable $exception) {
-            echo $exception->getMessage();
             return response()->json(
                 $exception,
                 Response::HTTP_BAD_REQUEST
@@ -93,17 +93,18 @@ class OfferController extends Controller
             DB::beginTransaction();
 
             $created_offer = new Offer();
-            $created_offer->title          = $request->input('title');
-            $created_offer->target         = $request->input('target');
-            $created_offer->job            = $request->input('job');
-            $created_offer->note           = $request->input('note');
-            $created_offer->picture        = $request->input('picture');
-            $created_offer->link           = $request->input('link');
-            $created_offer->user_class     = $request->input('user_class');
-            $created_offer->post_date      = now()->format('Y-m-y');
-            $created_offer->end_date       = $request->input('end_date');
+            $created_offer->title = $request->input('title');
+            $created_offer->target = $request->input('target');
+            $created_offer->job = $request->input('job');
+            $created_offer->note = $request->input('note');
+            $created_offer->picture = $request->input('picture');
+            $created_offer->link = $request->input('link');
+            $created_offer->user_class = $request->input('user_class');
+            $created_offer->post_date = now()->format('Y-m-y');
+            $created_offer->end_date = $request->input('end_date');
             $created_offer->student_number = 2180418;
             $created_offer->save();
+
             $created_offer->tags()->sync($request->input('offer_tag_ids'));
 
             // 全ての保存処理が成功したので処理を確定する
@@ -116,6 +117,7 @@ class OfferController extends Controller
         } catch (\Throwable $exception) {
             // 例外が起きたらロールバックを行う
             DB::rollback();
+
             return response()->json(
                 $exception,
                 Response::HTTP_BAD_REQUEST
@@ -134,18 +136,22 @@ class OfferController extends Controller
                 'tags',
                 'tags.genres',
                 'tags.targets',
-                'users'
+                'users',
             ])
                 ->findOrFail($request->input('offer_id'));
-            $updated_offer->title      = $request->input('title');
-            $updated_offer->target     = $request->input('target');
-            $updated_offer->job        = $request->input('job');
-            $updated_offer->note       = $request->input('note');
-            $updated_offer->picture    = $request->input('picture');
-            $updated_offer->link       = $request->input('link');
-            $updated_offer->user_class = $request->input('user_class');
-            $updated_offer->end_date   = $request->input('end_date');
-            $updated_offer->tags()->sync($request->input('offer_tag_ids'));
+            $updated_offer->title = $request->input('title') ?? $updated_offer->title;
+            $updated_offer->target = $request->input('target') ?? $updated_offer->target;
+            $updated_offer->job = $request->input('job') ?? $updated_offer->job;
+            $updated_offer->note = $request->input('note') ?? $updated_offer->note;
+            $updated_offer->picture = $request->input('picture') ?? $updated_offer->picture;
+            $updated_offer->link = $request->input('link') ?? $updated_offer->link;
+            $updated_offer->user_class = $request->input('user_class') ?? $updated_offer->user_class;
+            $updated_offer->end_date = $request->input('end_date') ?? $updated_offer->end_date;
+
+            if ($request->has('offer_tag_ids')) {
+                $updated_offer->tags()->sync($request->input('offer_tag_ids'));
+            }
+
             $updated_offer->save();
 
             // 全ての保存処理が成功したので処理を確定する
@@ -163,6 +169,7 @@ class OfferController extends Controller
         } catch (\Throwable $exception) {
             // 例外が起きたらロールバックを行う
             DB::rollback();
+
             return response()->json(
                 $exception,
                 Response::HTTP_BAD_REQUEST
@@ -191,6 +198,7 @@ class OfferController extends Controller
         } catch (\Throwable $exception) {
             // 例外が起きたらロールバックを行う
             DB::rollback();
+
             return response()->json(
                 $exception,
                 Response::HTTP_BAD_REQUEST

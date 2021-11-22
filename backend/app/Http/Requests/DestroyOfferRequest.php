@@ -25,7 +25,7 @@ class DestroyOfferRequest extends FormRequest
     public function rules()
     {
         return [
-            'offer_id'   => ['required', 'integer'],
+            'offer_id' => ['required', 'integer'],
         ];
     }
 }

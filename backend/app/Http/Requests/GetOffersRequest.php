@@ -25,9 +25,9 @@ class GetOffersRequest extends FormRequest
     public function rules()
     {
         return [
-            'offer_tag_ids'   => ['nullable', 'array'],
+            'offer_tag_ids' => ['nullable', 'array'],
             'offer_tag_ids.*' => ['integer', 'min:1'],
-            'page'            => ['required', 'integer']
+            'page' => ['nullable', 'integer'],
         ];
     }
 }
