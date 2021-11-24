@@ -24,7 +24,7 @@ use App\Http\Resources\OfferCollection;
 class OfferController extends Controller
 {
     #募集取得API
-    public function index(GetOfferRequest $request)
+    public function single(GetOfferRequest $request)
     {
         try {
             $fetched_offer = Offer::with([
