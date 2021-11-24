@@ -39,7 +39,7 @@ Route::group(['prefix' => 'promotion', 'as' => 'promotion.'], function () {
 
 // 作品APIグループ
 Route::group(['prefix' => 'work', 'as' => 'work.'], function () {
-    Route::get('/', 'WorkController@index')->name('index');
+    Route::get('single', 'WorkController@single')->name('single');
     Route::get('list', 'WorkController@list')->name('list');
     Route::post('post', 'WorkController@post')->name('post');
     Route::post('edit', 'WorkController@edit')->name('edit');
