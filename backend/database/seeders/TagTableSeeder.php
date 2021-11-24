@@ -17,14 +17,14 @@ class TagTableSeeder extends Seeder
     public function run()
     {
         $array = [
-            [//IT
+            "IT" => [
                 'とりあえずIT科募集', 
                 'モバイルアプリエンジニア募集', 
                 'フロントエンジニア募集', 
                 'バックエンドエンジニア募集', 
                 'インフラエンジニア募集', 
             ],
-            [//GAME
+            "GAME" => [
                 'とりあえずゲーム科募集',
                 'アプリケーションプログラマー募集',
                 'エンジンプログラマー募集',
@@ -34,7 +34,7 @@ class TagTableSeeder extends Seeder
                 'ツールプログラマー募集',
                 'ゲームグラフィックデザイナー募集',
             ],
-            [//WEB
+            "WEB" => [
                 'とりあえずWEB科募集',
                 'UIできる人募集',
                 'UXできる人募集',
@@ -44,17 +44,18 @@ class TagTableSeeder extends Seeder
             ],
 
         ];
+
+        $offerId = TagGenre::where("genre_name", "募集")->first('id')->id;
         
-        $genre = ['IT', 'GAME', 'WEB'];
+        foreach($array as $key => $arr){
+            $TagTargetId = TagTarget::where('target_name', $key)->first('id')->id;
 
-
-        foreach($array as $index => $arr){
-            foreach($arr as $value){
+            foreach($arr as $key => $value){
                 $tag = new Tag();
 
                 $tag->tag_name = $value;
-                $tag->tag_genre_id = TagGenre::where("genre_name", "募集")->first('id')->id;
-                $tag->tag_target_id = TagTarget::where("target_name", $genre[$index])->first('id')->id;
+                $tag->tag_genre_id = $offerId;
+                $tag->tag_target_id = $TagTargetId;
 
                 $tag->save();
             }
