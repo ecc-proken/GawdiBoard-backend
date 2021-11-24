@@ -2,30 +2,130 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DestroyPromotionRequest;
+use App\Http\Requests\GetPromotionRequest;
+use App\Http\Requests\GetPromotionsRequest;
+use App\Http\Requests\StorePromotionRequest;
+use App\Http\Requests\UpdatePromotionRequest;
+use Illuminate\Support\Facades\DB;
+use App\Models\Promotion;
+use App\Http\Resources\PromotionResource;
+use App\Http\Resources\PromotionCollection;
+
 class PromotionController extends Controller
 {
-    public function single()
+    #宣伝取得API
+    public function single(GetPromotionRequest $request)
     {
-        return 'single';
+        $fetched_promotion = Promotion::with([
+            'tags',
+            'tags.genres',
+            'tags.targets',
+            'users',
+        ])
+            ->findOrFail($request->input('promotion_id'));
+
+        return new PromotionResource($fetched_promotion);
     }
 
-    public function list()
+    #宣伝一覧API
+    public function list(GetPromotionsRequest $request)
     {
-        return 'list';
+        $promotion_tags = $request->input('promotion_tag_ids');
+        $fetched_promotions = Promotion::with([
+            'tags',
+            'tags.genres',
+            'tags.targets',
+            'users',
+        ]);
+
+        # 宣伝タグ配列が空の場合は何もしない
+        if (is_array($promotion_tags) && !empty($promotion_tags)) {
+            $fetched_promotions = $fetched_promotions
+                ->whereHas('tags', function ($query) use ($promotion_tags) {
+                    $query->whereIn('tags.id', $promotion_tags);
+                });
+        }
+
+        # page番号 * 30件のデータを最新順で取得
+        $fetched_promotions = $fetched_promotions
+            ->latest('post_date')
+            ->paginate(30);
+
+        return new PromotionCollection($fetched_promotions);
     }
 
-    public function post()
+    #宣伝投稿API
+    public function post(StorePromotionRequest $request)
     {
-        return 'post';
+        $created_promotion = new Promotion();
+
+        // トランザクションの開始
+        DB::transaction(function () use ($request, $created_promotion) {
+            $created_promotion->title = $request->input('title');
+            $created_promotion->note = $request->input('note');
+            $created_promotion->picture = $request->input('picture');
+            $created_promotion->link = $request->input('link');
+            $created_promotion->user_class = $request->input('user_class');
+            $created_promotion->post_date = now()->format('Y-m-y');
+            $created_promotion->end_date = $request->input('end_date');
+            $created_promotion->student_number = 2180418;
+            $created_promotion->save();
+
+            $created_promotion->tags()->sync($request->input('promotion_tag_ids'));
+
+            // リレーションを更新
+            $created_promotion->load('tags');
+        });
+
+        return new PromotionResource($created_promotion);
     }
 
-    public function edit()
+    #宣伝編集API
+    public function edit(UpdatePromotionRequest $request)
     {
-        return 'edit';
+        $updated_promotion = Promotion::with([
+            'tags',
+            'tags.genres',
+            'tags.targets',
+            'users',
+        ])
+            ->findOrFail($request->input('promotion_id'));
+
+        // トランザクションの開始
+        DB::transaction(function () use ($request, $updated_promotion) {
+            $updated_promotion->title = $request->input('title') ?? $updated_promotion->title;
+            $updated_promotion->note = $request->input('note') ?? $updated_promotion->note;
+            $updated_promotion->picture = $request->input('picture') ?? $updated_promotion->picture;
+            $updated_promotion->link = $request->input('link') ?? $updated_promotion->link;
+            $updated_promotion->user_class = $request->input('user_class') ?? $updated_promotion->user_class;
+            $updated_promotion->end_date = $request->input('end_date') ?? $updated_promotion->end_date;
+
+            if ($request->has('promotion_tag_ids')) {
+                $updated_promotion->tags()->sync($request->input('promotion_tag_ids'));
+            }
+
+            $updated_promotion->save();
+
+            // リレーションを更新
+            $updated_promotion->load('tags');
+        });
+
+        return new PromotionResource($updated_promotion);
     }
 
-    public function delete()
+    #宣伝削除API
+    public function delete(DestroyPromotionRequest $request)
     {
-        return 'delete';
+        // トランザクションの開始
+        DB::transaction(function () use ($request) {
+            #中間テーブルとの関連削除も行う
+            $destroy_promotion = Promotion::findOrFail($request->input('promotion_id'));
+            $destroy_promotion->tags()->detach();
+            $destroy_promotion::destroy($request->input('promotion_id'));
+        });
+
+        # 200を返却
+        return http_response_code();
     }
 }
