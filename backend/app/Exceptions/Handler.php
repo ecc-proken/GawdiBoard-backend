@@ -3,6 +3,9 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use \GuzzleHttp\Exception\ServerException;
+use \Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -37,5 +40,31 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $exception)
+    {
+
+        # 認証できていない場合403
+        if ($exception instanceof UnauthorizedHttpException) {
+            return response()->json(
+                [
+                    'message' => $exception->getMessage(),
+                ],
+                Response::HTTP_FORBIDDEN
+            );
+        }
+
+        # サーバーがダウンしている場合500
+        if ($exception instanceof ServerException) {
+            return response()->json(
+                [
+                    'message' => $exception->getMessage(),
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
+        return parent::render($request, $exception);
     }
 }
