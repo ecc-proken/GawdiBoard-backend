@@ -7,6 +7,7 @@ use App\Http\Requests\GetOfferRequest;
 use App\Http\Requests\GetOffersRequest;
 use App\Http\Requests\StoreOfferRequest;
 use App\Http\Requests\UpdateOfferRequest;
+use Illuminate\Support\Facades\DB;
 use App\Models\Offer;
 use App\Http\Resources\OfferResource;
 use App\Http\Resources\OfferCollection;
@@ -65,22 +66,26 @@ class OfferController extends Controller
     public function post(StoreOfferRequest $request)
     {
         $created_offer = new Offer();
-        $created_offer->title = $request->input('title');
-        $created_offer->target = $request->input('target');
-        $created_offer->job = $request->input('job');
-        $created_offer->note = $request->input('note');
-        $created_offer->picture = $request->input('picture');
-        $created_offer->link = $request->input('link');
-        $created_offer->user_class = $request->input('user_class');
-        $created_offer->post_date = now()->format('Y-m-y');
-        $created_offer->end_date = $request->input('end_date');
-        $created_offer->student_number = 2180418;
-        $created_offer->save();
 
-        $created_offer->tags()->sync($request->input('offer_tag_ids'));
+        // トランザクションの開始
+        DB::transaction(function () use ($request, $created_offer) {
+            $created_offer->title = $request->input('title');
+            $created_offer->target = $request->input('target');
+            $created_offer->job = $request->input('job');
+            $created_offer->note = $request->input('note');
+            $created_offer->picture = $request->input('picture');
+            $created_offer->link = $request->input('link');
+            $created_offer->user_class = $request->input('user_class');
+            $created_offer->post_date = now()->format('Y-m-y');
+            $created_offer->end_date = $request->input('end_date');
+            $created_offer->student_number = 2180418;
+            $created_offer->save();
 
-        // リレーションを更新
-        $created_offer->load('tags');
+            $created_offer->tags()->sync($request->input('offer_tag_ids'));
+
+            // リレーションを更新
+            $created_offer->load('tags');
+        });
 
         return new OfferResource($created_offer);
     }
@@ -95,23 +100,27 @@ class OfferController extends Controller
             'users',
         ])
             ->findOrFail($request->input('offer_id'));
-        $updated_offer->title = $request->input('title') ?? $updated_offer->title;
-        $updated_offer->target = $request->input('target') ?? $updated_offer->target;
-        $updated_offer->job = $request->input('job') ?? $updated_offer->job;
-        $updated_offer->note = $request->input('note') ?? $updated_offer->note;
-        $updated_offer->picture = $request->input('picture') ?? $updated_offer->picture;
-        $updated_offer->link = $request->input('link') ?? $updated_offer->link;
-        $updated_offer->user_class = $request->input('user_class') ?? $updated_offer->user_class;
-        $updated_offer->end_date = $request->input('end_date') ?? $updated_offer->end_date;
 
-        if ($request->has('offer_tag_ids')) {
-            $updated_offer->tags()->sync($request->input('offer_tag_ids'));
-        }
+        // トランザクションの開始
+        DB::transaction(function () use ($request, $updated_offer) {
+            $updated_offer->title = $request->input('title') ?? $updated_offer->title;
+            $updated_offer->target = $request->input('target') ?? $updated_offer->target;
+            $updated_offer->job = $request->input('job') ?? $updated_offer->job;
+            $updated_offer->note = $request->input('note') ?? $updated_offer->note;
+            $updated_offer->picture = $request->input('picture') ?? $updated_offer->picture;
+            $updated_offer->link = $request->input('link') ?? $updated_offer->link;
+            $updated_offer->user_class = $request->input('user_class') ?? $updated_offer->user_class;
+            $updated_offer->end_date = $request->input('end_date') ?? $updated_offer->end_date;
 
-        $updated_offer->save();
+            if ($request->has('offer_tag_ids')) {
+                $updated_offer->tags()->sync($request->input('offer_tag_ids'));
+            }
 
-        // リレーションを更新
-        $updated_offer->load('tags');
+            $updated_offer->save();
+
+            // リレーションを更新
+            $updated_offer->load('tags');
+        });
 
         return new OfferResource($updated_offer);
     }
@@ -119,10 +128,13 @@ class OfferController extends Controller
     #募集削除API
     public function delete(DestroyOfferRequest $request)
     {
-        #中間テーブルとの関連削除も行う
-        $destroy_offer = Offer::findOrFail($request->input('offer_id'));
-        $destroy_offer->tags()->detach();
-        $destroy_offer::destroy($request->input('offer_id'));
+        // トランザクションの開始
+        DB::transaction(function () use ($request) {
+            #中間テーブルとの関連削除も行う
+            $destroy_offer = Offer::findOrFail($request->input('offer_id'));
+            $destroy_offer->tags()->detach();
+            $destroy_offer::destroy($request->input('offer_id'));
+        });
 
         # 200を返却
         return http_response_code();
