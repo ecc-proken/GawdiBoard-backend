@@ -20,7 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // 募集APIグループ
 Route::group(['prefix' => 'offer', 'as' => 'offer.'], function () {
-    Route::get('/', 'OfferController@index')->name('index');
+    Route::get('single', 'OfferController@single')->name('single');
     Route::get('list', 'OfferController@list')->name('list');
     Route::post('post', 'OfferController@post')->name('post');
     Route::post('edit', 'OfferController@edit')->name('edit');
@@ -30,7 +30,7 @@ Route::group(['prefix' => 'offer', 'as' => 'offer.'], function () {
 
 // 宣伝APIグループ
 Route::group(['prefix' => 'promotion', 'as' => 'promotion.'], function () {
-    Route::get('/', 'PromotionController@index')->name('index');
+    Route::get('single', 'PromotionController@single')->name('single');
     Route::get('list', 'PromotionController@list')->name('list');
     Route::post('post', 'PromotionController@post')->name('post');
     Route::post('edit', 'PromotionController@edit')->name('edit');
@@ -39,7 +39,7 @@ Route::group(['prefix' => 'promotion', 'as' => 'promotion.'], function () {
 
 // 作品APIグループ
 Route::group(['prefix' => 'work', 'as' => 'work.'], function () {
-    Route::get('/', 'WorkController@index')->name('index');
+    Route::get('single', 'WorkController@single')->name('single');
     Route::get('list', 'WorkController@list')->name('list');
     Route::post('post', 'WorkController@post')->name('post');
     Route::post('edit', 'WorkController@edit')->name('edit');

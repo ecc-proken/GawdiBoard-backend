@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 class WorkController extends Controller
 {
-    public function index()
-    {  
-        return 'index';
+    public function single()
+    {
+        return 'single';
     }
 
     public function list()

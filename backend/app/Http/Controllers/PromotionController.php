@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 class PromotionController extends Controller
 {
-    public function index()
+    public function single()
     {
-        return 'index';
+        return 'single';
     }
 
     public function list()
