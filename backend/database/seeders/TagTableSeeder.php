@@ -47,16 +47,14 @@ class TagTableSeeder extends Seeder
         
         $genre = ['IT', 'GAME', 'WEB'];
 
-        $tagTarget = new TagTarget();
-        $tagGenre = new TagGenre();
 
         foreach($array as $index => $arr){
             foreach($arr as $value){
                 $tag = new Tag();
 
                 $tag->tag_name = $value;
-                $tag->tag_genre_id = $tagGenre->where("genre_name", "=", "募集")->get()[0]->id;
-                if($index == 0) $tag->tag_target_id = $tagTarget->where("target_name", $genre[$index])->get("id")[0]->id;
+                $tag->tag_genre_id = TagGenre::where("genre_name", "募集")->first('id')->id;
+                $tag->tag_target_id = TagTarget::where("target_name", $genre[$index])->first('id')->id;
 
                 $tag->save();
             }
