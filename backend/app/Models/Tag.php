@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Tag extends Model
 {
     use HasFactory;
-    protected $guarded = ['tag_target_id'];
+    protected $guarded = [''];
     protected $fillable = ['tag_name', 'tag_genre_id'];
 
     #povotはレスポンスに必要ないので非表示

@@ -14,7 +14,6 @@ class TagGenresTableSeeder extends Seeder
      */
     public function run()
     {
-        //募集,作品、宣伝
         $arr = ['募集', '作品', '宣伝'];
 
         foreach($arr as $value){
