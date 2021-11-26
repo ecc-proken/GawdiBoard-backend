@@ -8,7 +8,6 @@ use App\Models\User;
 class UserFactory extends Factory
 {
     protected $model = User::class;
-
     /**
      * Define the model's default state.
      *
@@ -22,7 +21,7 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'link' => $this->faker->url(),
             'self_introduction' => $this->faker->sentence(),
-            'created_at' => now(),
+            'create_at' => now(),
         ];
     }
 }

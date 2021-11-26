@@ -19,8 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->nullable();
             $table->string('link')->nullable();
             $table->string('self_introduction')->nullable();
-            $table->timestamps();
-            $table->dropColumn('updated_at');
+            $table->timestamp('create_at', $precision = 0);
         });
     }
 
