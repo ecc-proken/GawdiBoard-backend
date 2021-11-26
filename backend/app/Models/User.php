@@ -11,6 +11,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
     protected $primaryKey = 'student_number';
+    const UPDATED_AT = null;
 
     /**
      * Indicates if the IDs are auto-incrementing.
@@ -18,7 +19,7 @@ class User extends Authenticatable
      * @var bool
      */
     public $incrementing = false;
-    public $timestamps = false;
+    public $timestamps = true;
 
     /**
      * The attributes that are mass assignable.
