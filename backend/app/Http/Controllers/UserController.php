@@ -56,7 +56,11 @@ class UserController extends Controller
 
     public function whoami()
     {
-        return 'post';
+        #TODO : ユーザー認証済みの場合学籍番号取得
+        $student_number = 2180418;
+        $login_user = User::findOrFail($student_number);
+
+        return $login_user;
     }
 
     public function regist_email()
