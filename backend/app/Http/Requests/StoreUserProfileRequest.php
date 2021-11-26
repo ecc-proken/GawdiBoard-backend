@@ -28,7 +28,7 @@ class StoreUserProfileRequest extends FormRequest
             'student_number' => ['required', 'integer', 'digits:7'], #数値かつ7桁
             'user_name' => ['required', 'string', 'max:50'],
             'link' => ['required', 'url', 'max:255'],
-            'self_introduction' => ['required', 'string',    'max:255'],
+            'self_introduction' => ['required', 'string', 'max:255'],
         ];
     }
 }

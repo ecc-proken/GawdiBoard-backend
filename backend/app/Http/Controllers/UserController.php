@@ -40,8 +40,8 @@ class UserController extends Controller
     {
         #TODO : ユーザー認証済みの場合学籍番号取得
         $student_number = 2180418;
-        #存在チェックで422を返すためにfindOrFailメソッドを使う。　余計なクエリが飛ぶため必要ないなら消す。
         $updated_user = User::findOrFail($student_number);
+
         // トランザクションの開始
         DB::transaction(function () use ($request, $updated_user, $student_number) {
             $updated_user->student_number = $student_number;
