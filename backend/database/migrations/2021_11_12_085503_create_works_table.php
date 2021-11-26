@@ -20,7 +20,7 @@ class CreateWorksTable extends Migration
             $table->string('note')->nullable();
             $table->string('picture')->nullable();
             $table->string('link')->nullable();
-            $table->timestamp('post_date', $precision = 0);
+            $table->date('post_date');
             $table->unsignedBigInteger('student_number');
             $table->foreign('student_number')->references('student_number')->on('users');
         });
