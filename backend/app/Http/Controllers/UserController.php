@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserProfileRequest;
 use App\Http\Requests\UpdateUserProfileRequest;
+use App\Http\Requests\GetUserOfferRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Models\Offer;
 use \Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\OfferCollection;
 
 class UserController extends Controller
 {
@@ -73,9 +76,20 @@ class UserController extends Controller
         return 'delete';
     }
 
-    public function offer_list()
+    public function offer_list(GetUserOfferRequest $request)
     {
-        return 'offer_list';
+        $student_number = $request->input('student_number');
+        $fetched_user_offers = Offer::with([
+            'tags',
+            'tags.genres',
+            'tags.targets',
+            'users',
+        ])
+            ->where('student_number', '=', $student_number)
+            ->latest('post_date')
+            ->get();
+
+        return new OfferCollection($fetched_user_offers);
     }
 
     public function promotion_list()
