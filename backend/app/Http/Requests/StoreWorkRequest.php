@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class GetWorkRequest extends FormRequest
+class StoreWorkRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,12 @@ class GetWorkRequest extends FormRequest
     public function rules()
     {
         return [
-            'work_id' => ['required', 'integer'],
+            'title' => ['required', 'string', 'max:50'],
+            'short_description' => ['nullable', 'string', 'max:255'],
+            'note' => ['nullable', 'string', 'max:255'],
+            'picture' => ['nullable', 'url', 'max:255'],
+            'link' => ['nullable', 'string', 'max:300'],
+            'student_number' => ['required', 'integer'],
         ];
     }
 }
