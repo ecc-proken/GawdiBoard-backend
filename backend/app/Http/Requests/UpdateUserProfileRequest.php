@@ -25,7 +25,6 @@ class UpdateUserProfileRequest extends FormRequest
     public function rules()
     {
         return [
-            'student_number' => ['required', 'integer'],
             'user_name' => ['required', 'string', 'max:50'],
             'link' => ['required', 'url', 'max:255'],
             'self_introduction' => ['required', 'string',    'max:255'],
