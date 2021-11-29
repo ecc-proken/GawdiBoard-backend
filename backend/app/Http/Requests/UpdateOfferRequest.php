@@ -33,7 +33,7 @@ class UpdateOfferRequest extends FormRequest
             'picture' => ['nullable', 'url',    'max:255'],
             'link' => ['nullable', 'string', 'max:300'],
             'user_class' => ['nullable', 'string', 'max:10'],
-            'end_date' => ['nullable', 'after::today', 'date_format:"Y-m-d"'],
+            'end_date' => ['nullable', 'after::today', 'date_format:"Y-m-d"', 'before_or_equal:now +30 day'],
             'offer_tag_ids' => ['nullable', 'array'],
             'offer_tag_ids.*' => ['integer',  'min:1'],
         ];
