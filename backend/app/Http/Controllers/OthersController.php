@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GetTagsRequest;
+use App\Models\Tag;
+use App\Http\Resources\TagCollection;
+
 class OthersController extends Controller
 {
     public function login()
@@ -14,9 +18,16 @@ class OthersController extends Controller
         return 'logout';
     }
 
-    public function tag_list()
+    public function tag_list(GetTagsRequest $request)
     {
-        return 'tag_list';
+        $fetched_tags = Tag::with([
+            'genres',
+            'targets',
+        ])
+            ->where('tag_genre_id', '=', $request->input('tag_genre_id'))
+            ->get();
+
+        return new TagCollection($fetched_tags);
     }
 
     public function contact()
