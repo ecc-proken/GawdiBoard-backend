@@ -40,17 +40,17 @@ class OfferDelete extends Command
      */
     public function handle()
     {
-        $message = '';
         // トランザクションの開始
-        DB::transaction(function () use ($message) {
-            $message .= '[' . date('Y-m-d h:i:s') . ']destroied offers:' .
-                Offer::whereDate('end_date', '2021-12-31')->delete();
-        });
+        DB::transaction(function () {
+            # 戻り値は削除件数
+            $delete_offers = Offer::whereDate('end_date', '<', date('Y-m-d'))->delete();
+            $message = '[' . date('Y-m-d h:i:s') . ']' . $delete_offers . '件削除';
 
-        //INFOレベルでメッセージを出力
-        $this->info($message);
-        //ログを書き出す
-        Log::setDefaultDriver('batch');
-        Log::info($message);
+            //INFOレベルでメッセージを出力
+            $this->info($message);
+            //ログを書き出す
+            Log::setDefaultDriver('batch');
+            Log::info($message);
+        });
     }
 }
