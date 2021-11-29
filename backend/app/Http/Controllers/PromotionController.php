@@ -119,7 +119,6 @@ class PromotionController extends Controller
     {
         // トランザクションの開始
         DB::transaction(function () use ($request) {
-            #中間テーブルとの関連削除も行う
             $destroy_promotion = Promotion::findOrFail($request->input('promotion_id'));
             $destroy_promotion::destroy($request->input('promotion_id'));
         });
