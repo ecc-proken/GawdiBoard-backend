@@ -15,7 +15,7 @@ class CreateOfferTagsTable extends Migration
     {
         Schema::create('offer_tags', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('offer_id')->constrained();
+            $table->foreignId('offer_id')->constrained()->cascadeOnDelete();
             $table->foreignId('tag_id')->constrained();
         });
     }
