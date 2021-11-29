@@ -15,7 +15,7 @@ class CreateWorkTagsTable extends Migration
     {
         Schema::create('work_tags', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('work_id')->constrained();
+            $table->foreignId('work_id')->constrained()->cascadeOnDelete();
             $table->foreignId('tag_id')->constrained();
         });
     }

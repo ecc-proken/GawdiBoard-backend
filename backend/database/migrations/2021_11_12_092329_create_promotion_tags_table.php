@@ -15,7 +15,7 @@ class CreatePromotionTagsTable extends Migration
     {
         Schema::create('promotion_tags', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('promotion_id')->constrained();
+            $table->foreignId('promotion_id')->constrained()->cascadeOnDelete();
             $table->foreignId('tag_id')->constrained();
         });
     }
