@@ -20,7 +20,7 @@ class WorkCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'works' => OfferResource::collection($this->collection),
+            'works' => WorkResource::collection($this->collection),
         ];
     }
 }

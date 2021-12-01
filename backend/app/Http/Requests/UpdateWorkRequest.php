@@ -31,6 +31,8 @@ class UpdateWorkRequest extends FormRequest
             'note' => ['nullable', 'string', 'max:255'],
             'picture' => ['nullable', 'url', 'max:255'],
             'link' => ['nullable', 'string', 'max:300'],
+            'work_tag_ids' => ['nullable', 'array'],
+            'work_tag_ids.*' => ['integer', 'min:1'],
         ];
     }
 }

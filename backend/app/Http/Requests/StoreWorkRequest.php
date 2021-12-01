@@ -30,7 +30,8 @@ class StoreWorkRequest extends FormRequest
             'note' => ['nullable', 'string', 'max:255'],
             'picture' => ['nullable', 'url', 'max:255'],
             'link' => ['nullable', 'string', 'max:300'],
-            'student_number' => ['required', 'integer'],
+            'work_tag_ids' => ['nullable', 'array'],
+            'work_tag_ids.*' => ['integer', 'min:1'],
         ];
     }
 }

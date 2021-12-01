@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Work;
 
-use App\Http\Requests\PostWorkRequest;
 use App\Http\Requests\UpdateWorkRequest;
 use App\Http\Requests\GetWorkRequest;
-use App\Http\Requests\DestroyOfferRequest;
-
+use App\Http\Requests\DestroyWorkRequest;
+use App\Http\Requests\StoreWorkRequest;
 use App\Http\Resources\WorkResource;
 use App\Http\Resources\WorkCollection;
 
@@ -65,7 +64,7 @@ class WorkController extends Controller
     /**
      * 作品投稿API
      */
-    public function post(PostWorkRequest $request)
+    public function post(StoreWorkRequest $request)
     {
         $created_work = new Work();
 
@@ -76,7 +75,6 @@ class WorkController extends Controller
             $created_work->picture = $request->input('picture');
             $created_work->link = $request->input('link');
             $created_work->post_date = now()->format('Y-m-y');
-            $created_work->student_number = 2180418;
             $created_work->save();
 
             $created_work->tags()->sync($request->input('work_tag_ids'));
@@ -125,14 +123,13 @@ class WorkController extends Controller
     /**
      * 作品削除API
      */
-    public function delete(DestroyOfferRequest $request)
+    public function delete(DestroyWorkRequest $request)
     {
         DB::transaction(function () use ($request) {
             $id = $request->input('work_id');
 
             // 中間テーブルとの関連削除も行う。
             $destroy_work = Work::findOrFail($id);
-            $destroy_work->tags()->detach();
             $destroy_work::destroy($id);
         });
 
