@@ -25,8 +25,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // バッチ処理するコマンドをここに記述する
-        // 毎日深夜0時に掲載期間が終了した募集を削除
+        // 毎日深夜0時に掲載期間が終了した募集と宣伝を削除
         $schedule->command('offer:delete')->daily();
+        $schedule->command('promotion:delete')->daily();
     }
 
     /**

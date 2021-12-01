@@ -67,6 +67,13 @@ return [
             'days' => 14,
         ],
 
+        'batch' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/batch.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 14,
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
