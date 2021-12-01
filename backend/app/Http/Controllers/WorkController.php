@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 class WorkController extends Controller
 {
     /**
-     * 宣伝取得API
+     * 作品取得API
      */
     public function single(GetWorkRequest $request)
     {
@@ -34,7 +34,7 @@ class WorkController extends Controller
     }
 
     /**
-     * 宣伝一覧API
+     * 作品一覧API
      */
     public function list(GetWorkRequest $request)
     {
@@ -46,7 +46,7 @@ class WorkController extends Controller
             'users',
         ]);
 
-        // 宣伝タグ配列が空の場合は何もしない
+        // 作品タグ配列が空の場合は何もしない
         if (is_array($work_tags) && !empty($work_tags)) {
             $fetched_works = $fetched_works
                 ->whereHas('tags', function ($query) use ($work_tags) {
@@ -63,7 +63,7 @@ class WorkController extends Controller
     }
 
     /**
-     * 宣伝投稿API
+     * 作品投稿API
      */
     public function post(PostWorkRequest $request)
     {
@@ -88,7 +88,7 @@ class WorkController extends Controller
     }
 
     /**
-     * 宣伝編集API
+     * 作品編集API
      */
     public function edit(UpdateWorkRequest $request)
     {
@@ -123,7 +123,7 @@ class WorkController extends Controller
     }
 
     /**
-     * 宣伝削除API
+     * 作品削除API
      */
     public function delete(DestroyOfferRequest $request)
     {
