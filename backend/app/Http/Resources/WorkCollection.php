@@ -17,6 +17,8 @@ class WorkCollection extends ResourceCollection
      *
      * @var string
      */
+    public static $wrap = 'works';
+
     public function toArray($request)
     {
         return [
