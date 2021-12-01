@@ -8,11 +8,13 @@ use App\Http\Requests\GetUserPostedRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Offer;
+use App\Models\Work;
 use App\Models\Promotion;
 use \Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\OfferCollection;
 use App\Http\Resources\PromotionCollection;
+use App\Http\Resources\WorkCollection;
 
 class UserController extends Controller
 {
@@ -110,8 +112,19 @@ class UserController extends Controller
         return new PromotionCollection($fetched_user_promotions);
     }
 
-    public function work_list()
+    public function work_list(GetUserPostedRequest $request)
     {
-        return 'work_list';
+        $student_number = $request->input('student_number');
+        $fetched_user_works = Work::with([
+            'tags',
+            'tags.genres',
+            'tags.targets',
+            'users',
+        ])
+            ->where('student_number', '=', $student_number)
+            ->latest('post_date')
+            ->get();
+
+        return new WorkCollection($fetched_user_works);
     }
 }
