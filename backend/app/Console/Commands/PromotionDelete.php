@@ -44,7 +44,7 @@ class PromotionDelete extends Command
         DB::transaction(function () {
             # 戻り値は削除件数
             $delete_promotions = Promotion::whereDate('end_date', '<', date('Y-m-d'))->delete();
-            $message = '[' . date('Y-m-d h:i:s') . ']' . $delete_promotions . '件削除';
+            $message = '[' . date('Y-m-d h:i:s') . '] 宣伝：' . $delete_promotions . '件削除';
 
             //INFOレベルでメッセージを出力
             $this->info($message);
