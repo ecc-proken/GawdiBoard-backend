@@ -100,12 +100,12 @@ class WorkController extends Controller
         ])->findOrFail($id);
 
         DB::transaction(function () use ($request, $updated_work) {
-            $updated_work->title = $request->input('title') ?? $updated_work->title;
-            $updated_work->short_descrition = $request->input('short_description') ?? $updated_work->short_description;
-            $updated_work->note = $request->input('note') ?? $updated_work->note;
-            $updated_work->picture = $request->input('picture') ?? $updated_work->picture;
-            $updated_work->link = $request->input('link') ?? $updated_work->link;
-            $updated_work->student_number = $request->input('student_number') ?? $updated_work->student_number;
+            $updated_work->title = $request->input('title');
+            $updated_work->short_descrition = $request->input('short_description');
+            $updated_work->note = $request->input('note');
+            $updated_work->picture = $request->input('picture');
+            $updated_work->link = $request->input('link');
+            $updated_work->student_number = $request->input('student_number');
 
             if ($request->has('work_tag_ids')) {
                 $updated_work->tags()->sync($request->input('work_tag_ids'));
