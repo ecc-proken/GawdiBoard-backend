@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Work;
 
-use App\Http\Requests\PostWorkRequest;
 use App\Http\Requests\UpdateWorkRequest;
 use App\Http\Requests\GetWorkRequest;
-use App\Http\Requests\DestroyOfferRequest;
-
+use App\Http\Requests\DestroyWorkRequest;
+use App\Http\Requests\StoreWorkRequest;
 use App\Http\Resources\WorkResource;
 use App\Http\Resources\WorkCollection;
 
@@ -17,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 class WorkController extends Controller
 {
     /**
-     * 宣伝取得API
+     * 作品取得API
      */
     public function single(GetWorkRequest $request)
     {
@@ -34,7 +33,7 @@ class WorkController extends Controller
     }
 
     /**
-     * 宣伝一覧API
+     * 作品一覧API
      */
     public function list(GetWorkRequest $request)
     {
@@ -46,7 +45,7 @@ class WorkController extends Controller
             'users',
         ]);
 
-        // 宣伝タグ配列が空の場合は何もしない
+        // 作品タグ配列が空の場合は何もしない
         if (is_array($work_tags) && !empty($work_tags)) {
             $fetched_works = $fetched_works
                 ->whereHas('tags', function ($query) use ($work_tags) {
@@ -63,9 +62,9 @@ class WorkController extends Controller
     }
 
     /**
-     * 宣伝投稿API
+     * 作品投稿API
      */
-    public function post(PostWorkRequest $request)
+    public function post(StoreWorkRequest $request)
     {
         $created_work = new Work();
 
@@ -76,7 +75,6 @@ class WorkController extends Controller
             $created_work->picture = $request->input('picture');
             $created_work->link = $request->input('link');
             $created_work->post_date = now()->format('Y-m-y');
-            $created_work->student_number = 2180418;
             $created_work->save();
 
             $created_work->tags()->sync($request->input('work_tag_ids'));
@@ -88,7 +86,7 @@ class WorkController extends Controller
     }
 
     /**
-     * 宣伝編集API
+     * 作品編集API
      */
     public function edit(UpdateWorkRequest $request)
     {
@@ -102,12 +100,12 @@ class WorkController extends Controller
         ])->findOrFail($id);
 
         DB::transaction(function () use ($request, $updated_work) {
-            $updated_work->title = $request->input('title') ?? $updated_work->title;
-            $updated_work->short_descrition = $request->input('short_description') ?? $updated_work->short_description;
-            $updated_work->note = $request->input('note') ?? $updated_work->note;
-            $updated_work->picture = $request->input('picture') ?? $updated_work->picture;
-            $updated_work->link = $request->input('link') ?? $updated_work->link;
-            $updated_work->student_number = $request->input('student_number') ?? $updated_work->student_number;
+            $updated_work->title = $request->input('title');
+            $updated_work->short_descrition = $request->input('short_description');
+            $updated_work->note = $request->input('note');
+            $updated_work->picture = $request->input('picture');
+            $updated_work->link = $request->input('link');
+            $updated_work->student_number = $request->input('student_number');
 
             if ($request->has('work_tag_ids')) {
                 $updated_work->tags()->sync($request->input('work_tag_ids'));
@@ -123,16 +121,15 @@ class WorkController extends Controller
     }
 
     /**
-     * 宣伝削除API
+     * 作品削除API
      */
-    public function delete(DestroyOfferRequest $request)
+    public function delete(DestroyWorkRequest $request)
     {
         DB::transaction(function () use ($request) {
             $id = $request->input('work_id');
 
             // 中間テーブルとの関連削除も行う。
             $destroy_work = Work::findOrFail($id);
-            $destroy_work->tags()->detach();
             $destroy_work::destroy($id);
         });
 

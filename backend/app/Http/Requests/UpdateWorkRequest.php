@@ -13,7 +13,8 @@ class UpdateWorkRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        # TODO: ユーザー認証が出来次第ロジックを記入
+        return true;
     }
 
     /**
@@ -24,7 +25,14 @@ class UpdateWorkRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'id' => ['required', 'integer'],
+            'title' => ['nullable', 'string', 'max:50'],
+            'short_description' => ['nullable', 'string', 'max:255'],
+            'note' => ['nullable', 'string', 'max:255'],
+            'picture' => ['nullable', 'url', 'max:255'],
+            'link' => ['nullable', 'string', 'max:300'],
+            'work_tag_ids' => ['nullable', 'array'],
+            'work_tag_ids.*' => ['integer', 'min:1'],
         ];
     }
 }

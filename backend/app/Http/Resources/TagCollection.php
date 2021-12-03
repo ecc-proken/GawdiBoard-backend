@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class WorkCollection extends ResourceCollection
+class TagCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -12,17 +12,12 @@ class WorkCollection extends ResourceCollection
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
-    /**
-     * 適用する「データ」ラッパー
-     *
-     * @var string
-     */
-    public static $wrap = 'works';
+    public static $wrap = 'tags';
 
     public function toArray($request)
     {
         return [
-            'works' => WorkResource::collection($this->collection),
+            'tags' => TagResource::collection($this->collection),
         ];
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class GetWorkRequest extends FormRequest
+class GetTagsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,6 @@ class GetWorkRequest extends FormRequest
      */
     public function authorize()
     {
-        # TODO: ユーザー認証が出来次第ロジックを記入
         return true;
     }
 
@@ -25,9 +24,7 @@ class GetWorkRequest extends FormRequest
     public function rules()
     {
         return [
-            'work_tag_ids' => ['nullable', 'array'],
-            'work_tag_ids.*' => ['integer', 'min:1'],
-            'work_id' => ['required', 'integer'],
+            'tag_genre_id' => ['required', 'integer'],
         ];
     }
 }

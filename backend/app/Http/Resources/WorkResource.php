@@ -28,7 +28,8 @@ class WorkResource extends JsonResource
             'picture' => $this->picture,
             'link' => $this->link,
             'post_date' => $this->post_date,
-            'student_number' => $this->student_number,
+            'student_number' => $this->users->user_name,
+            'tags' => TagResource::collection($this->whenLoaded('tags')),
         ];
     }
 }

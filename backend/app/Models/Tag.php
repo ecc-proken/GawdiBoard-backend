@@ -9,7 +9,6 @@ class Tag extends Model
 {
     use HasFactory;
     protected $guarded = [''];
-    protected $fillable = ['tag_name', 'tag_genre_id'];
 
     #povotはレスポンスに必要ないので非表示
     protected $hidden = ['pivot'];
@@ -18,12 +17,12 @@ class Tag extends Model
     # タグに紐づいたジャンルを取得
     public function genres()
     {
-        return $this->belongsTo(TagGenre::class, 'id');
+        return $this->belongsTo(TagGenre::class, 'tag_genre_id');
     }
 
     # タグに紐づいたターゲットを取得
     public function targets()
     {
-        return $this->belongsTo(Tagtarget::class, 'id');
+        return $this->belongsTo(Tagtarget::class, 'tag_target_id');
     }
 }

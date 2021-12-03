@@ -130,9 +130,7 @@ class OfferController extends Controller
     {
         // トランザクションの開始
         DB::transaction(function () use ($request) {
-            #中間テーブルとの関連削除も行う
             $destroy_offer = Offer::findOrFail($request->input('offer_id'));
-            $destroy_offer->tags()->detach();
             $destroy_offer::destroy($request->input('offer_id'));
         });
 
