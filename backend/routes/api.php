@@ -25,7 +25,7 @@ Route::group(['prefix' => 'offer', 'as' => 'offer.'], function () {
     Route::post('post', 'OfferController@post')->name('post');
     Route::post('edit', 'OfferController@edit')->name('edit');
     Route::post('delete', 'OfferController@delete')->name('delete');
-    Route::post('apply', 'OfferController@apply ')->name('apply');
+    Route::post('apply', 'OfferController@apply')->name('apply');
 });
 
 // 宣伝APIグループ
