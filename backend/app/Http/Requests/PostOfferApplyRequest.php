@@ -25,7 +25,7 @@ class PostOfferApplyRequest extends FormRequest
     {
         return [
             'student_number' => ['required', 'integer', 'digits:7'], #数値かつ7桁
-            'offer_student_number' => ['required', 'integer', 'digits:7'], #数値かつ7桁
+            'offer_id' => ['required', 'integer'],
             'interest' => ['required', 'integer'],
             'user_class' => ['required', 'string'],
             'message' => ['required', 'string'],

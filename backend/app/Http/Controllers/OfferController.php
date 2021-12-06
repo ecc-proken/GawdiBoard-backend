@@ -7,16 +7,17 @@ use App\Http\Requests\GetOfferRequest;
 use App\Http\Requests\GetOffersRequest;
 use App\Http\Requests\StoreOfferRequest;
 use App\Http\Requests\UpdateOfferRequest;
+use App\Http\Requests\PostOfferApplyRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\Offer;
+use App\Models\User;
 use App\Http\Resources\OfferResource;
 use App\Http\Resources\OfferCollection;
+use App\Mail\OfferApply;
+use Illuminate\Support\Facades\Mail;
 
 /*
     TODO: ログインユーザーの学籍番号を取得する
-    TODO: 認証の是非でレスポンスを分ける
-    TODO: 応募投稿APIの作成
-    TODO: カスタムexceptionを作成して適用する
 */
 
 class OfferController extends Controller
@@ -139,8 +140,44 @@ class OfferController extends Controller
     }
 
     #応募投稿API
-    public function apply()
+    public function apply(PostOfferApplyRequest $request)
     {
-        return 'apply';
+        #対象の募集と募集主
+        $fetched_offer = Offer::with(['users', ])
+            ->findOrFail($request->input('offer_id'));
+        #募集主の連絡先
+        $to_email = $fetched_offer->users->email;
+        #応募者
+        $applicant = User::findOrFail($request->input('student_number'));
+        #興味度
+        $interest = $request->input('interest');
+
+        #mailableクラスに渡すオブジェクトを構成
+        $mail_info = (object) [];
+        $mail_info = (object) [
+            'subject' => $this->subject_decision($interest),
+            'student_number' => $applicant->student_number,
+            'user_name' => $applicant->user_name,
+            'title' => $fetched_offer->title,
+            # TODO : マイページのpathがどうなるかわからないので保留
+            'profile' => 'https://ユーザーマイページ',
+            'email' => $applicant->email,
+            'interest' => $interest,
+            'message' => $request->input('message'),
+        ];
+
+        Mail::to($to_email)->send(new OfferApply($mail_info));
+    }
+
+    # 興味度から件名を判断
+    private function subject_decision($interest)
+    {
+        if ($interest == 1) {
+            return 'あなたの募集に参加希望の人がいます - Gawdi Board';
+        } elseif ($interest == 2) {
+            return 'あなたの募集に興味がある人がいます - Gawdi Board';
+        } elseif ($interest == 3) {
+            return 'あなたの募集について話を聞いてみたい人がいます　- Gawdi Board';
+        }
     }
 }
