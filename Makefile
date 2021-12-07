@@ -13,7 +13,7 @@ create-project:
 	@make laravel-install
 	$(DC) exec app php artisan key:generate
 	$(DC) exec app php artisan storage:link
-	$(DC) exec app chmod -R 777 storage bootstrap/cache
+	$(DC) exec app chown -R $$UNAME:$$UNAME bootstrap/cache
 	@make fresh
 install-recommend-packages:
 	$(DC) exec app composer require doctrine/dbal
@@ -30,7 +30,7 @@ init:
 	$(DC) exec app cp .env.example .env
 	$(DC) exec app php artisan key:generate
 	$(DC) exec app php artisan storage:link
-	$(DC) exec app chmod -R 777 storage bootstrap/cache
+	$(DC) exec app chown -R $$UNAME:$$UNAME bootstrap/cache
 	@make fresh
 remake:
 	@make destroy
