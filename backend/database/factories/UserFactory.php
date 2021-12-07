@@ -17,7 +17,7 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'student_number' => random_int(100000, 999999),
+            'student_number' => random_int(10 ** 6, 10 ** 7 - 1),
             'user_name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'link' => $this->faker->url(),
