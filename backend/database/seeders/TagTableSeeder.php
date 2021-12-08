@@ -45,17 +45,17 @@ class TagTableSeeder extends Seeder
 
         ];
 
-        $offerId = TagGenre::where("genre_name", "募集")->first('id')->id;
+        $offer_id = TagGenre::where("genre_name", "募集")->first('id')->id;
         
         foreach($array as $key => $arr){
-            $TagTargetId = TagTarget::where('target_name', $key)->first('id')->id;
+            $tag_target_id = TagTarget::where('target_name', $key)->first('id')->id;
 
             foreach($arr as $key => $value){
                 $tag = new Tag();
 
                 $tag->tag_name = $value;
-                $tag->tag_genre_id = $offerId;
-                $tag->tag_target_id = $TagTargetId;
+                $tag->tag_genre_id = $offer_id;
+                $tag->tag_target_id = $tag_target_id;
 
                 $tag->save();
             }
