@@ -70,17 +70,17 @@ class UserController extends Controller
         return $login_user;
     }
 
-    public function regist_email()
+    public function registEmail()
     {
         return 'regist-email';
     }
 
-    public function edit_email()
+    public function editEmail()
     {
         return 'delete';
     }
 
-    public function offer_list(GetUserPostedRequest $request)
+    public function offerList(GetUserPostedRequest $request)
     {
         $student_number = $request->input('student_number');
         $fetched_user_offers = Offer::with([
@@ -96,7 +96,7 @@ class UserController extends Controller
         return new OfferCollection($fetched_user_offers);
     }
 
-    public function promotion_list(GetUserPostedRequest $request)
+    public function promotionList(GetUserPostedRequest $request)
     {
         $student_number = $request->input('student_number');
         $fetched_user_promotions = Promotion::with([
@@ -112,7 +112,7 @@ class UserController extends Controller
         return new PromotionCollection($fetched_user_promotions);
     }
 
-    public function work_list(GetUserPostedRequest $request)
+    public function workList(GetUserPostedRequest $request)
     {
         $student_number = $request->input('student_number');
         $fetched_user_works = Work::with([
