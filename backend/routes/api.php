@@ -51,15 +51,15 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
     Route::post('regist', 'UserController@regist')->name('regist');
     Route::post('edit', 'UserController@edit')->name('edit');
     Route::get('whoami', 'UserController@whoami')->name('whoami');
-    Route::post('regist-email', 'UserController@regist_email')->name('regist-email');
-    Route::post('edit-email', 'UserController@regist_email')->name('edit-email');
-    Route::get('offer-list', 'UserController@offer_list')->name('offer-list');
-    Route::get('promotion-list', 'UserController@promotion_list')->name('promotion-list');
-    Route::get('work-list', 'UserController@work_list')->name('work-list');
+    Route::post('regist-email', 'UserController@registEmail')->name('regist-email');
+    Route::post('edit-email', 'UserController@registEmail')->name('edit-email');
+    Route::get('offer-list', 'UserController@offerList')->name('offer-list');
+    Route::get('promotion-list', 'UserController@promotionList')->name('promotion-list');
+    Route::get('work-list', 'UserController@workList')->name('work-list');
 });
 
 ## その他　
 Route::post('/login', 'OthersController@regist')->name('login');
 Route::post('/logout', 'OthersController@edit')->name('logout');
-Route::get('/tag-list', 'OthersController@tag_list')->name('tag-list');
+Route::get('/tag-list', 'OthersController@tagList')->name('tag-list');
 Route::post('/contact', 'OthersController@contact')->name('contact');

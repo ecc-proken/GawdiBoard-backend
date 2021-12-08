@@ -18,7 +18,7 @@ class OthersController extends Controller
         return 'logout';
     }
 
-    public function tag_list(GetTagsRequest $request)
+    public function tagList(GetTagsRequest $request)
     {
         $fetched_tags = Tag::with([
             'genres',
