@@ -149,8 +149,6 @@ class OfferController extends Controller
         $to_email = $fetched_offer->users->email;
         #応募者
         $applicant = User::findOrFail($request->input('student_number'));
-        #興味度
-        $interest = $request->input('interest');
 
         #mailableクラスに渡すオブジェクトを構成
         $mail_info = (object) [];
@@ -158,10 +156,9 @@ class OfferController extends Controller
             'student_number' => $applicant->student_number,
             'user_name' => $applicant->user_name,
             'title' => $fetched_offer->title,
-            # TODO : マイページのpathがどうなるかわからないので保留
-            'profile' => 'https://ユーザーマイページ',
+            'profile' => $applicant->getUserProfileLink(),
             'email' => $applicant->email,
-            'interest' => $interest,
+            'interest' => $request->input('interest'),
             'message' => $request->input('message'),
         ];
 
