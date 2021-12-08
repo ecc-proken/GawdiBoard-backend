@@ -40,6 +40,18 @@ class OfferApply extends Mailable
                 'message' => $this->apply->message,
             ])
             # 件名
-            ->subject($this->apply->subject);
+            ->subject($this->subjectDecision($this->apply->interest));
+    }
+
+    # 興味度から件名を判断
+    private function subjectDecision($interest)
+    {
+        if ($interest == 1) {
+            return 'あなたの募集に参加希望の人がいます - Gawdi Board';
+        } elseif ($interest == 2) {
+            return 'あなたの募集に興味がある人がいます - Gawdi Board';
+        } elseif ($interest == 3) {
+            return 'あなたの募集について話を聞いてみたい人がいます　- Gawdi Board';
+        }
     }
 }

@@ -155,7 +155,6 @@ class OfferController extends Controller
         #mailableクラスに渡すオブジェクトを構成
         $mail_info = (object) [];
         $mail_info = (object) [
-            'subject' => $this->subject_decision($interest),
             'student_number' => $applicant->student_number,
             'user_name' => $applicant->user_name,
             'title' => $fetched_offer->title,
@@ -167,17 +166,5 @@ class OfferController extends Controller
         ];
 
         Mail::to($to_email)->send(new OfferApply($mail_info));
-    }
-
-    # 興味度から件名を判断
-    private function subject_decision($interest)
-    {
-        if ($interest == 1) {
-            return 'あなたの募集に参加希望の人がいます - Gawdi Board';
-        } elseif ($interest == 2) {
-            return 'あなたの募集に興味がある人がいます - Gawdi Board';
-        } elseif ($interest == 3) {
-            return 'あなたの募集について話を聞いてみたい人がいます　- Gawdi Board';
-        }
     }
 }
