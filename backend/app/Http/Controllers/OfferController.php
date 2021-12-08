@@ -7,16 +7,17 @@ use App\Http\Requests\GetOfferRequest;
 use App\Http\Requests\GetOffersRequest;
 use App\Http\Requests\StoreOfferRequest;
 use App\Http\Requests\UpdateOfferRequest;
+use App\Http\Requests\PostOfferApplyRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\Offer;
+use App\Models\User;
 use App\Http\Resources\OfferResource;
 use App\Http\Resources\OfferCollection;
+use App\Mail\OfferApply;
+use Illuminate\Support\Facades\Mail;
 
 /*
     TODO: ログインユーザーの学籍番号を取得する
-    TODO: 認証の是非でレスポンスを分ける
-    TODO: 応募投稿APIの作成
-    TODO: カスタムexceptionを作成して適用する
 */
 
 class OfferController extends Controller
@@ -139,8 +140,28 @@ class OfferController extends Controller
     }
 
     #応募投稿API
-    public function apply()
+    public function apply(PostOfferApplyRequest $request)
     {
-        return 'apply';
+        #対象の募集と募集主
+        $fetched_offer = Offer::with(['users', ])
+            ->findOrFail($request->input('offer_id'));
+        #募集主の連絡先
+        $to_email = $fetched_offer->users->email;
+        #応募者
+        $applicant = User::findOrFail($request->input('student_number'));
+
+        #mailableクラスに渡すオブジェクトを構成
+        $mail_info = (object) [];
+        $mail_info = (object) [
+            'student_number' => $applicant->student_number,
+            'user_name' => $applicant->user_name,
+            'title' => $fetched_offer->title,
+            'profile' => $applicant->getUserProfileLink(),
+            'email' => $applicant->email,
+            'interest' => $request->input('interest'),
+            'message' => $request->input('message'),
+        ];
+
+        Mail::to($to_email)->send(new OfferApply($mail_info));
     }
 }

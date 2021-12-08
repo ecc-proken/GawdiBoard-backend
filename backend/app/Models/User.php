@@ -30,4 +30,9 @@ class User extends Authenticatable
         'user_name',
         'email',
     ];
+
+    public function getUserProfileLink()
+    {
+        return 'https://gawdiboard/profile/' . $this->student_number;
+    }
 }
