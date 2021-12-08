@@ -17,9 +17,9 @@ class TagTargetsTableSeeder extends Seeder
         $arr = ['IT', 'WEB', 'GAME'];
         
         foreach($arr as $value){
-            $tagTarget = new TagTarget();
-            $tagTarget->target_name = $value;
-            $tagTarget->save();
+            $tag_target = new TagTarget();
+            $tag_target->target_name = $value;
+            $tag_target->save();
         }
     }
 }

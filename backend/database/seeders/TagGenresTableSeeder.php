@@ -17,10 +17,10 @@ class TagGenresTableSeeder extends Seeder
         $arr = ['募集', '作品', '宣伝'];
 
         foreach($arr as $value){
-            $tagGenre = new TagGenre();
+            $tag_genre = new TagGenre();
 
-            $tagGenre->genre_name = $value;
-            $tagGenre->save();
+            $tag_genre->genre_name = $value;
+            $tag_genre->save();
         }
     }
 }
