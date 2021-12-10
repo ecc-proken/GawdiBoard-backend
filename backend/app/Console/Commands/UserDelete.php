@@ -43,7 +43,7 @@ class UserDelete extends Command
         // トランザクションの開始
         DB::transaction(function () {
             # 戻り値は削除件数
-            $delete_users = user::whereDate('created_at', '>', date('Y-m-d', strtotime('-7 year')))->delete();
+            $delete_users = user::whereDate('created_at', '<', date('Y-m-d', strtotime('-7 year')))->delete();
             $message = '[' . date('Y-m-d h:i:s') . '] ユーザー ： ' . $delete_users . '件削除';
 
             //INFOレベルでメッセージを出力

@@ -24,7 +24,7 @@ class CreateOffersTable extends Migration
             $table->date('post_date');
             $table->date('end_date');
             $table->unsignedBigInteger('student_number');
-            $table->foreign('student_number')->references('student_number')->on('users');
+            $table->foreign('student_number')->references('student_number')->on('users')->cascadeOnDelete();
             $table->string('user_class');
         });
     }
