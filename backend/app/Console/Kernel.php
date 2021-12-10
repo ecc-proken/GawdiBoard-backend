@@ -28,6 +28,9 @@ class Kernel extends ConsoleKernel
         // 毎日深夜0時に掲載期間が終了した募集と宣伝を削除
         $schedule->command('offer:delete')->daily();
         $schedule->command('promotion:delete')->daily();
+
+        // 年度始め(4月1日)に7年経過ユーザーを削除
+        $schedule->command('user:delete')->yearlyOn(4, 1, '00:00');
     }
 
     /**

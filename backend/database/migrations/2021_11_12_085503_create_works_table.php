@@ -22,7 +22,7 @@ class CreateWorksTable extends Migration
             $table->string('link')->nullable();
             $table->date('post_date');
             $table->unsignedBigInteger('student_number');
-            $table->foreign('student_number')->references('student_number')->on('users');
+            $table->foreign('student_number')->references('student_number')->on('users')->cascadeOnDelete();
         });
     }
 
