@@ -158,7 +158,7 @@ class OfferController extends Controller
         if ($owner_student_number === $applicant_student_number) {
             return response()->json(
                 [
-                    'message' => 'Owner and applicant are the same.',
+                    'message' => '応募者と募集主が同一です。',
                 ],
                 Response::HTTP_FORBIDDEN
             );
