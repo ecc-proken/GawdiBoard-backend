@@ -33,8 +33,8 @@ class StoreOfferRequest extends FormRequest
             'link' => ['nullable', 'string', 'max:300'],
             'user_class' => ['required', 'string', 'max:10'],
             'end_date' => ['required', 'after::today', 'date_format:"Y-m-d"', 'before_or_equal:now +30 day'],
-            'offer_tag_ids' => ['nullable', 'array'],
-            'offer_tag_ids.*' => ['integer',  'min:1'],
+            'work_tag_ids' => ['nullable', 'array'],
+            'work_tag_ids.*' => ['integer',  'min:1'],
         ];
     }
 }

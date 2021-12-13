@@ -25,7 +25,7 @@ class UpdateWorkRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => ['required', 'integer'],
+            'work_id' => ['required', 'integer'],
             'title' => ['nullable', 'string', 'max:50'],
             'short_description' => ['nullable', 'string', 'max:255'],
             'note' => ['nullable', 'string', 'max:255'],
