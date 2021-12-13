@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Work;
+use App\Models\User;
 
-use App\Http\Requests\UpdateWorkRequest;
 use App\Http\Requests\GetWorkRequest;
+use App\Http\Requests\GetWorksRequest;
+use App\Http\Requests\UpdateWorkRequest;
 use App\Http\Requests\DestroyWorkRequest;
 use App\Http\Requests\StoreWorkRequest;
 use App\Http\Resources\WorkResource;
@@ -35,9 +37,10 @@ class WorkController extends Controller
     /**
      * 作品一覧API
      */
-    public function list(GetWorkRequest $request)
+    public function list(GetWorksRequest $request)
     {
         $work_tags = $request->input('work_tag_ids');
+
         $fetched_works = Work::with([
             'tags',
             'tags.genres',
@@ -54,7 +57,7 @@ class WorkController extends Controller
         }
 
         // page番号 * 30件のデータを最新順で取得
-        $fetched_works = $work_tags
+        $fetched_works = $fetched_works
             ->latest('post_date')
             ->paginate(30);
 
@@ -75,6 +78,9 @@ class WorkController extends Controller
             $created_work->picture = $request->input('picture');
             $created_work->link = $request->input('link');
             $created_work->post_date = now()->format('Y-m-y');
+
+            //TODO 一時的にランダムのユーザを使用しています。認証機能実装後変更する。
+            $created_work->student_number = User::inRandomOrder()->limit(1)->get('student_number')[0]->student_number;
             $created_work->save();
 
             $created_work->tags()->sync($request->input('work_tag_ids'));
@@ -101,11 +107,10 @@ class WorkController extends Controller
 
         DB::transaction(function () use ($request, $updated_work) {
             $updated_work->title = $request->input('title');
-            $updated_work->short_descrition = $request->input('short_description');
+            $updated_work->short_description = $request->input('short_description');
             $updated_work->note = $request->input('note');
             $updated_work->picture = $request->input('picture');
             $updated_work->link = $request->input('link');
-            $updated_work->student_number = $request->input('student_number');
 
             if ($request->has('work_tag_ids')) {
                 $updated_work->tags()->sync($request->input('work_tag_ids'));

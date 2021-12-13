@@ -18,6 +18,8 @@ class WorkResource extends JsonResource
      *
      * @var string
      */
+    public static $wrap = 'work';
+
     public function toArray($request)
     {
         return [
@@ -28,7 +30,7 @@ class WorkResource extends JsonResource
             'picture' => $this->picture,
             'link' => $this->link,
             'post_date' => $this->post_date,
-            'student_number' => $this->users->user_name,
+            'student_number' => $this->users->student_number,
             'tags' => TagResource::collection($this->whenLoaded('tags')),
         ];
     }
