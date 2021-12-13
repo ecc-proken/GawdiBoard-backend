@@ -14,7 +14,9 @@ use App\Models\User;
 use App\Http\Resources\OfferResource;
 use App\Http\Resources\OfferCollection;
 use App\Mail\OfferApply;
+use App\Mail\OfferCompleted;
 use Illuminate\Support\Facades\Mail;
+use \Symfony\Component\HttpFoundation\Response;
 
 /*
     TODO: ログインユーザーの学籍番号を取得する
@@ -142,26 +144,50 @@ class OfferController extends Controller
     #応募投稿API
     public function apply(PostOfferApplyRequest $request)
     {
-        #対象の募集と募集主
+        #対象の募集と募集主の情報
         $fetched_offer = Offer::with(['users', ])
             ->findOrFail($request->input('offer_id'));
-        #募集主の連絡先
-        $to_email = $fetched_offer->users->email;
-        #応募者
-        $applicant = User::findOrFail($request->input('student_number'));
+        $owner_student_number = $fetched_offer->student_number;
+        $owner_email = $fetched_offer->users->email;
 
-        #mailableクラスに渡すオブジェクトを構成
+        #応募者の情報
+        $applicant_student_number = $request->input('student_number');
+        $applicant = User::findOrFail($applicant_student_number);
+        $applicant_email = $applicant->email;
+
+        if ($owner_student_number === $applicant_student_number) {
+            return response()->json(
+                [
+                    'message' => 'Owner and applicant are the same.',
+                ],
+                Response::HTTP_FORBIDDEN
+            );
+        }
+
+        #OfferApplyクラスに渡すオブジェクトを構成
         $mail_info = (object) [];
         $mail_info = (object) [
-            'student_number' => $applicant->student_number,
+            'student_number' => $applicant_student_number,
             'user_name' => $applicant->user_name,
             'title' => $fetched_offer->title,
             'profile' => $applicant->getUserProfileLink(),
-            'email' => $applicant->email,
+            'email' => $applicant_email,
             'interest' => $request->input('interest'),
             'message' => $request->input('message'),
         ];
 
-        Mail::to($to_email)->send(new OfferApply($mail_info));
+        #OfferCompletedクラスに渡すオブジェクトを構成
+        $owner_info = (object) [];
+        $owner_info = (object) [
+            'student_number' => $owner_student_number,
+            'user_name' => $fetched_offer->users->user_name,
+            'title' => $fetched_offer->title,
+            'email' => $owner_email,
+        ];
+
+        #募集主へのメール
+        Mail::to($owner_email)->send(new OfferApply($mail_info));
+        #応募者へのメール
+        Mail::to($applicant_email)->send(new OfferCompleted($owner_info));
     }
 }
