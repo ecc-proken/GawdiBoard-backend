@@ -13,9 +13,8 @@ use App\Models\Offer;
 use App\Models\User;
 use App\Http\Resources\OfferResource;
 use App\Http\Resources\OfferCollection;
-use App\Mail\OfferApply;
-use App\Mail\OfferCompleted;
-use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendOfferApplyEmail;
+use App\Jobs\SendOfferCompletedEmail;
 use \Symfony\Component\HttpFoundation\Response;
 
 /*
@@ -185,9 +184,8 @@ class OfferController extends Controller
             'email' => $owner_email,
         ];
 
-        #募集主へのメール
-        Mail::to($owner_email)->send(new OfferApply($mail_info));
-        #応募者へのメール
-        Mail::to($applicant_email)->send(new OfferCompleted($owner_info));
+        #メール送信をキューに格納 (送信先, メール情報)
+        SendOfferApplyEmail::dispatch($owner_email, $mail_info);
+        SendOfferCompletedEmail::dispatch($applicant_email, $owner_info);
     }
 }
