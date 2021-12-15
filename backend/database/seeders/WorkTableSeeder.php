@@ -48,7 +48,7 @@ class WorkTableSeeder extends Seeder
         ];
 
         foreach ($arr as $value) {
-            Work::factory(1)->make($value);
+            Work::factory()->count(1)->create($value);
         }
     }
 }
