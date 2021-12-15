@@ -25,6 +25,9 @@ class DatabaseSeeder extends Seeder
 
             PromotionTableSeeder::class,
             PromotionTagTableSeeder::class,
+
+            WorkTableSeeder::class,
+            WorkTagTableSeeder::class,
         ]);
     }
 }
