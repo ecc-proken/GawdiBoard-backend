@@ -22,6 +22,9 @@ class DatabaseSeeder extends Seeder
 
             OfferTableSeeder::class,
             OfferTagTableSeeder::class,
+
+            PromotionTableSeeder::class,
+            PromotionTagTableSeeder::class,
         ]);
     }
 }
