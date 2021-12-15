@@ -15,9 +15,19 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserTableSeeder::class,
+
             TagGenresTableSeeder::class,
             TagTargetsTableSeeder::class,
-            TagTableSeeder::class
+            TagTableSeeder::class,
+
+            OfferTableSeeder::class,
+            OfferTagTableSeeder::class,
+
+            PromotionTableSeeder::class,
+            PromotionTagTableSeeder::class,
+
+            WorkTableSeeder::class,
+            WorkTagTableSeeder::class,
         ]);
     }
 }
