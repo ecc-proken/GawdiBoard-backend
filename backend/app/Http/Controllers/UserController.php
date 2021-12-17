@@ -15,6 +15,7 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\OfferCollection;
 use App\Http\Resources\PromotionCollection;
 use App\Http\Resources\WorkCollection;
+use App\Jobs\SendAuthenticationProcessEmail;
 
 class UserController extends Controller
 {
@@ -72,6 +73,8 @@ class UserController extends Controller
 
     public function registEmail()
     {
+        // jobの呼び出し（SendAuthenticationProcessEmail）
+        // SendAuthenticationProcessEmail::dispatch($applicant_email, $mail_info);
         return 'regist-email';
     }
 
