@@ -51,7 +51,7 @@ class OfferApply extends Mailable
         } elseif ($interest == 2) {
             return 'あなたの募集に興味がある人がいます - Gawdi Board';
         } elseif ($interest == 3) {
-            return 'あなたの募集について話を聞いてみたい人がいます　- Gawdi Board';
+            return 'あなたの募集について話を聞いてみたい人がいます - Gawdi Board';
         }
     }
 }
