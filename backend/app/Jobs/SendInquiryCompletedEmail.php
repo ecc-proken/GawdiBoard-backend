@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\InquiryCompleted;
 
 class SendInquiryCompletedEmail implements ShouldQueue
 {
@@ -33,6 +34,6 @@ class SendInquiryCompletedEmail implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->to_email)->send(new OfferApply());
+        Mail::to($this->to_email)->send(new InquiryCompleted());
     }
 }
