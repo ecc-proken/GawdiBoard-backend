@@ -1,5 +1,4 @@
 @component('mail::message')
-# Gawdi Boardを運用してくれて感謝感激なし汁ぶしゃ。<br>
 
 ユーザーがお問い合わせを送信しました。<br>
 対応をお願いします。<br>
