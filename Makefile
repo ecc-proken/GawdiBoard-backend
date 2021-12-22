@@ -4,8 +4,6 @@ up:
 	$(DC) up -d
 build:
 	$(DC) build --no-cache --force-rm
-laravel-install:
-	$(DC) exec app composer create-project --prefer-dist laravel/laravel .
 create-project:
 	mkdir -p backend
 	@make build
@@ -49,6 +47,8 @@ destroy-volumes:
 	$(DC) down --volumes --remove-orphans
 ps:
 	$(DC) ps
+top:
+	$(DC) top
 logs:
 	$(DC) logs
 logs-watch:
@@ -66,7 +66,7 @@ log-db:
 log-db-watch:
 	$(DC) logs --follow db
 web:
-	$(DC) exec web ash
+	$(DC) exec web bash
 app:
 	$(DC) exec app bash
 migrate:
@@ -101,8 +101,6 @@ db:
 	$(DC) exec db bash
 sql:
 	$(DC) exec db bash -c 'mysql -u $$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE'
-redis:
-	$(DC) exec redis redis-cli
 ide-helper:
 	$(DC) exec app php artisan clear-compiled
 	$(DC) exec app php artisan ide-helper:generate
