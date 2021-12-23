@@ -24,6 +24,41 @@ use \Symfony\Component\HttpFoundation\Response;
 class OfferController extends Controller
 {
     #募集取得API
+    /**
+     * @OA\Get(
+     *  path="/api/offer/single",
+     *  summary="募集取得",
+     *  description="ユーザのフォロワーを一覧取得する",
+     *  operationId="getOfferSingle",
+     *  tags={"offer"},
+     *  @OA\Parameter(ref="#/components/parameters/offer_get_single"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
+     */
     public function single(GetOfferRequest $request)
     {
         $fetched_offer = Offer::with([
@@ -38,6 +73,42 @@ class OfferController extends Controller
     }
 
     #募集一覧API
+    /**
+     * @OA\Get(
+     *  path="/api/offer/list",
+     *  summary="募集一覧",
+     *  description="投稿された募集一覧を取得する (要ログイン)",
+     *  operationId="getOfferList",
+     *  tags={"offer"},
+     *  @OA\Parameter(ref="#/components/parameters/offer_get_list_tag_ids"),
+     *  @OA\Parameter(ref="#/components/parameters/offer_get_list_page"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
+     */
     public function list(GetOffersRequest $request)
     {
         $offer_tags = $request->input('offer_tag_ids');
@@ -65,6 +136,41 @@ class OfferController extends Controller
     }
 
     #募集投稿API
+    /**
+     * @OA\Post(
+     *  path="/api/offer/post",
+     *  summary="募集投稿",
+     *  description="募集を投稿する　(要ログイン)",
+     *  operationId="postOffer",
+     *  tags={"offer"},
+     *  @OA\RequestBody(ref="#/components/requestBodies/post_offer_request_body"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=201,
+     *      description="募集が投稿された",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
+     */
     public function post(StoreOfferRequest $request)
     {
         $created_offer = new Offer();
@@ -93,6 +199,41 @@ class OfferController extends Controller
     }
 
     #募集編集API
+    /**
+     * @OA\Post(
+     *  path="/api/offer/edit",
+     *  summary="募集編集",
+     *  description="投稿された募集を編集する (要ログイン)",
+     *  operationId="editOffer",
+     *  tags={"offer"},
+     *  @OA\RequestBody(ref="#/components/requestBodies/edit_offer_request_body"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="募集が編集された",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
+     */
     public function edit(UpdateOfferRequest $request)
     {
         $updated_offer = Offer::with([
@@ -128,6 +269,41 @@ class OfferController extends Controller
     }
 
     #募集削除API
+    /**
+     * @OA\Post(
+     *  path="/api/offer/delete",
+     *  summary="募集削除",
+     *  description="投稿された募集を削除する (要ログイン)",
+     *  operationId="destroyOffer",
+     *  tags={"offer"},
+     *  @OA\RequestBody(ref="#/components/requestBodies/destroy_offer_request_body"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="募集が編集された",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
+     */
     public function delete(DestroyOfferRequest $request)
     {
         // トランザクションの開始
@@ -140,7 +316,43 @@ class OfferController extends Controller
         return http_response_code();
     }
 
-    #応募投稿API
+    #応募送信API
+    /**
+     * @OA\Post(
+     *  path="/api/offer/apply",
+     *  summary="応募送信",
+     *  description="募集に対して応募をする。募集主と応募者に対して確認メールを送信する。(要ログイン)、
+     *               自分が投稿した募集に応募しようとした場合403Forbiddenが返却される",
+     *  operationId="applyOffer",
+     *  tags={"offer"},
+     *  @OA\RequestBody(ref="#/components/requestBodies/apply_offer_request_body"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="募集が編集された",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
+     */
     public function apply(PostOfferApplyRequest $request)
     {
         #対象の募集と募集主の情報
