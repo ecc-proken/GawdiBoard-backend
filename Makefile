@@ -106,3 +106,6 @@ ide-helper:
 	$(DC) exec app php artisan ide-helper:generate
 	$(DC) exec app php artisan ide-helper:meta
 	$(DC) exec app php artisan ide-helper:models --nowrite
+
+swagger:
+	$(DC) exec app php artisan l5-swagger:generate
