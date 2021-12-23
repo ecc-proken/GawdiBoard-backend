@@ -36,3 +36,9 @@ $ make init
 
 -   ベースイメージ
     -   [mysql](https://hub.docker.com/_/mysql):8.0
+
+## APIドキュメント
+```bash
+$ make swagger
+```
+` http://localhost/api/documentation `
