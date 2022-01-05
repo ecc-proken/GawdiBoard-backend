@@ -286,7 +286,7 @@ class PromotionController extends Controller
      *  ),
      *  @OA\Response(
      *      response=200,
-     *      description="宣伝が編集された",
+     *      description="宣伝が削除された",
      *      @OA\MediaType(mediaType="application/json")
      *  ),
      * )
