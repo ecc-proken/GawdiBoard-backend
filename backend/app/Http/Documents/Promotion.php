@@ -1,13 +1,13 @@
 <?php
 /**
-* @OA\Parameter(
-*   parameter="promotion_get_single",
-*   name="promotion_id",
-*   in="query",
-*   required=true,
-*   description="宣伝のid",
-* ),
-*/
+ * @OA\Parameter(
+ *   parameter="promotion_get_single",
+ *   name="promotion_id",
+ *   in="query",
+ *   required=true,
+ *   description="宣伝のid",
+ * ),
+ */
 
 /**
  * @OA\Parameter(
