@@ -26,15 +26,15 @@ class UpdateOfferRequest extends FormRequest
     {
         return [
             'offer_id' => ['required', 'integer'],
-            'title' => ['nullable', 'string', 'max:50'],
-            'target' => ['nullable', 'string', 'max:255'],
-            'job' => ['nullable', 'string', 'max:255'],
-            'note' => ['nullable', 'string', 'max:255'],
-            'picture' => ['nullable', 'url',    'max:255'],
-            'link' => ['nullable', 'string', 'max:300'],
-            'user_class' => ['nullable', 'string', 'max:10'],
-            'end_date' => ['nullable', 'after::today', 'date_format:"Y-m-d"', 'before_or_equal:now +30 day'],
-            'offer_tag_ids' => ['nullable', 'array'],
+            'title' => ['present', 'string', 'max:50'],
+            'target' => ['present', 'string', 'max:255'],
+            'job' => ['present', 'string', 'max:255'],
+            'note' => ['present', 'string', 'max:255'],
+            'picture' => ['present', 'url',    'max:255'],
+            'link' => ['present', 'string', 'max:300'],
+            'user_class' => ['required', 'string', 'max:10'],
+            'end_date' => ['required', 'after::today', 'date_format:"Y-m-d"', 'before_or_equal:now +30 day'],
+            'offer_tag_ids' => ['required', 'array'],
             'offer_tag_ids.*' => ['integer',  'min:1'],
         ];
     }
