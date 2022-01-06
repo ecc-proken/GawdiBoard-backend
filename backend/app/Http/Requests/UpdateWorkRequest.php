@@ -26,12 +26,12 @@ class UpdateWorkRequest extends FormRequest
     {
         return [
             'work_id' => ['required', 'integer'],
-            'title' => ['nullable', 'string', 'max:50'],
-            'short_description' => ['nullable', 'string', 'max:255'],
-            'note' => ['nullable', 'string', 'max:255'],
-            'picture' => ['nullable', 'url', 'max:255'],
-            'link' => ['nullable', 'string', 'max:300'],
-            'work_tag_ids' => ['nullable', 'array'],
+            'title' => ['required', 'string', 'max:50'],
+            'short_description' => ['present', 'string', 'max:255'],
+            'note' => ['present', 'string', 'max:255'],
+            'picture' => ['present', 'url', 'max:255'],
+            'link' => ['present', 'string', 'max:300'],
+            'work_tag_ids' => ['required', 'array'],
             'work_tag_ids.*' => ['integer', 'min:1'],
         ];
     }
