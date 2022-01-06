@@ -26,7 +26,7 @@ class UpdateOfferRequest extends FormRequest
     {
         return [
             'offer_id' => ['required', 'integer'],
-            'title' => ['present', 'string', 'max:50'],
+            'title' => ['required', 'string', 'max:50'],
             'target' => ['present', 'string', 'max:255'],
             'job' => ['present', 'string', 'max:255'],
             'note' => ['present', 'string', 'max:255'],
