@@ -26,8 +26,8 @@ class UpdateUserProfileRequest extends FormRequest
     {
         return [
             'user_name' => ['required', 'string', 'max:50'],
-            'link' => ['required', 'url', 'max:255'],
-            'self_introduction' => ['required', 'string', 'max:255'],
+            'link' => ['present', 'url', 'max:255'],
+            'self_introduction' => ['present', 'string', 'max:255'],
         ];
     }
 }

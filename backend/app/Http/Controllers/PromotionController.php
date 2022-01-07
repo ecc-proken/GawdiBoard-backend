@@ -94,12 +94,12 @@ class PromotionController extends Controller
 
         // トランザクションの開始
         DB::transaction(function () use ($request, $updated_promotion) {
-            $updated_promotion->title = $request->input('title') ?? $updated_promotion->title;
-            $updated_promotion->note = $request->input('note') ?? $updated_promotion->note;
-            $updated_promotion->picture = $request->input('picture') ?? $updated_promotion->picture;
-            $updated_promotion->link = $request->input('link') ?? $updated_promotion->link;
-            $updated_promotion->user_class = $request->input('user_class') ?? $updated_promotion->user_class;
-            $updated_promotion->end_date = $request->input('end_date') ?? $updated_promotion->end_date;
+            $updated_promotion->title = $request->input('title');
+            $updated_promotion->note = $request->input('note');
+            $updated_promotion->picture = $request->input('picture');
+            $updated_promotion->link = $request->input('link');
+            $updated_promotion->user_class = $request->input('user_class');
+            $updated_promotion->end_date = $request->input('end_date');
 
             if ($request->has('promotion_tag_ids')) {
                 $updated_promotion->tags()->sync($request->input('promotion_tag_ids'));

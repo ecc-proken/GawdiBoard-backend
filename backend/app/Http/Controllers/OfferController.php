@@ -105,14 +105,14 @@ class OfferController extends Controller
 
         // トランザクションの開始
         DB::transaction(function () use ($request, $updated_offer) {
-            $updated_offer->title = $request->input('title') ?? $updated_offer->title;
-            $updated_offer->target = $request->input('target') ?? $updated_offer->target;
-            $updated_offer->job = $request->input('job') ?? $updated_offer->job;
-            $updated_offer->note = $request->input('note') ?? $updated_offer->note;
-            $updated_offer->picture = $request->input('picture') ?? $updated_offer->picture;
-            $updated_offer->link = $request->input('link') ?? $updated_offer->link;
-            $updated_offer->user_class = $request->input('user_class') ?? $updated_offer->user_class;
-            $updated_offer->end_date = $request->input('end_date') ?? $updated_offer->end_date;
+            $updated_offer->title = $request->input('title');
+            $updated_offer->target = $request->input('target');
+            $updated_offer->job = $request->input('job');
+            $updated_offer->note = $request->input('note');
+            $updated_offer->picture = $request->input('picture');
+            $updated_offer->link = $request->input('link');
+            $updated_offer->user_class = $request->input('user_class');
+            $updated_offer->end_date = $request->input('end_date');
 
             if ($request->has('offer_tag_ids')) {
                 $updated_offer->tags()->sync($request->input('offer_tag_ids'));

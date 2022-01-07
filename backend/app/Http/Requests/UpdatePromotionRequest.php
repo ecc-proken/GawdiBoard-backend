@@ -26,12 +26,12 @@ class UpdatePromotionRequest extends FormRequest
         return [
             'promotion_id' => ['required', 'integer'],
             'title' => ['required', 'string', 'max:50'],
-            'note' => ['nullable', 'string', 'max:255'],
-            'picture' => ['nullable', 'url',    'max:255'],
-            'link' => ['nullable', 'string', 'max:300'],
+            'note' => ['present', 'string', 'max:255'],
+            'picture' => ['present', 'url',    'max:255'],
+            'link' => ['present', 'string', 'max:300'],
             'user_class' => ['required', 'string', 'max:10'],
             'end_date' => ['required', 'after::today', 'date_format:"Y-m-d"', 'before_or_equal:now +90 day'],
-            'promotion_tag_ids' => ['nullable', 'array'],
+            'promotion_tag_ids' => ['required', 'array'],
             'promotion_tag_ids.*' => ['integer',  'min:1'],
         ];
     }
