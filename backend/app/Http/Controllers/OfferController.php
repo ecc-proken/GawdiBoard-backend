@@ -28,7 +28,7 @@ class OfferController extends Controller
      * @OA\Get(
      *  path="/api/offer/single",
      *  summary="募集取得",
-     *  description="ユーザのフォロワーを一覧取得する",
+     *  description="投稿された募集を一件取得する (要ログイン)",
      *  operationId="getOfferSingle",
      *  tags={"offer"},
      *  @OA\Parameter(ref="#/components/parameters/offer_get_single"),
