@@ -1,20 +1,20 @@
 <?php
+
 /**
-* @OA\Parameter(
-*   parameter="offer_get_single",
-*   name="offer_id",
-*   in="query",
-*   required=true,
-*   description="募集のid",
-* ),
-*/
+ * @OA\Parameter(
+ *   parameter="offer_get_single",
+ *   name="offer_id",
+ *   in="query",
+ *   required=true,
+ *   description="募集のid",
+ * ),
+ */
 
 /**
  * @OA\Parameter(
  *   parameter="offer_get_list_tag_ids",
  *   name="offer_tag_ids[]",
  *   in="query",
- *   required=true,
  *   @OA\Schema(
  *        type="array",
  *        @OA\Items(type="integer")
@@ -28,7 +28,6 @@
  *   parameter="offer_get_list_page",
  *   name="page",
  *   in="query",
- *   required=true,
  *   description="ページ番号 default 1",
  * ),
  */
@@ -38,7 +37,7 @@
  *   request="post_offer_request_body",
  *   required=true,
  *   @OA\JsonContent(
- *       required={"title", "user_class", "end_date"},
+ *       required={"title", "user_class", "end_date", "offer_tag_ids"},
  *       @OA\Property(
  *           property="title",
  *           type="string",
@@ -96,7 +95,7 @@
  *   request="edit_offer_request_body",
  *   required=true,
  *   @OA\JsonContent(
- *       required={"offer_id"},
+ *       required={"offer_id", "title", "user_class", "end_date", "offer_tag_ids"},
  *       @OA\Property(
  *           property="offer_id",
  *           type="number",
