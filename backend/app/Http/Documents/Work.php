@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @OA\Parameter(
  *   parameter="work_get_single",
@@ -14,7 +15,6 @@
  *   parameter="work_get_list_tag_ids",
  *   name="work_tag_ids[]",
  *   in="query",
- *   required=true,
  *   @OA\Schema(
  *        type="array",
  *        @OA\Items(type="integer")
@@ -28,7 +28,6 @@
  *   parameter="work_get_list_page",
  *   name="page",
  *   in="query",
- *   required=true,
  *   description="ページ番号 default 1",
  * ),
  */
@@ -38,7 +37,7 @@
  *   request="post_work_request_body",
  *   required=true,
  *   @OA\JsonContent(
- *       required={"title"},
+ *       required={"title", "work_tag_ids"},
  *       @OA\Property(
  *           property="title",
  *           type="string",
@@ -81,7 +80,7 @@
  *   request="edit_work_request_body",
  *   required=true,
  *   @OA\JsonContent(
- *       required={"work_id"},
+ *       required={"work_id", "title", "work_tag_ids"},
  *       @OA\Property(
  *           property="work_id",
  *           type="number",

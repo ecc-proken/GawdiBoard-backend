@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @OA\Parameter(
  *   parameter="promotion_get_single",
@@ -14,7 +15,6 @@
  *   parameter="promotion_get_list_tag_ids",
  *   name="offer_tag_ids[]",
  *   in="query",
- *   required=true,
  *   @OA\Schema(
  *        type="array",
  *        @OA\Items(type="integer")
@@ -28,7 +28,6 @@
  *   parameter="promotion_get_list_page",
  *   name="page",
  *   in="query",
- *   required=true,
  *   description="ページ番号 default 1",
  * ),
  */
@@ -38,7 +37,7 @@
  *   request="post_promotion_request_body",
  *   required=true,
  *   @OA\JsonContent(
- *       required={"title", "user_class", "end_date"},
+ *       required={"title", "user_class", "end_date", "promotion_tag_ids"},
  *       @OA\Property(
  *           property="title",
  *           type="string",
@@ -86,7 +85,7 @@
  *   request="edit_promotion_request_body",
  *   required=true,
  *   @OA\JsonContent(
- *       required={"promotion_id"},
+ *       required={"promotion_id", "title", "user_class", "end_date", "promotion_tag_ids"},
  *       @OA\Property(
  *           property="promotion_id",
  *           type="number",
