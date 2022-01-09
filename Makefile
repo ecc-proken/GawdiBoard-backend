@@ -30,7 +30,9 @@ init:
 	$(DC) exec app php artisan key:generate
 	$(DC) exec app php artisan storage:link
 	$(DC) exec app chown -R $$UNAME:$$UNAME bootstrap/cache
+	$(DC) exec app composer require "darkaonline/l5-swagger"
 	@make fresh
+	@make swagger
 remake:
 	@make destroy
 	@make init
