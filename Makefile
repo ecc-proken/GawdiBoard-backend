@@ -31,6 +31,7 @@ init:
 	$(DC) exec app php artisan storage:link
 	$(DC) exec app chown -R $$UNAME:$$UNAME bootstrap/cache
 	@make fresh
+	@make swagger
 remake:
 	@make destroy
 	@make init
