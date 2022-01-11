@@ -111,3 +111,5 @@ ide-helper:
 swagger:
 	$(DC) exec app php artisan l5-swagger:generate
 	
+update-packages:
+	$(DC) exec app composer update
