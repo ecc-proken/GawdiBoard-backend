@@ -59,7 +59,7 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
 });
 
 ## その他　
-Route::post('/login', 'OthersController@regist')->name('login');
-Route::post('/logout', 'OthersController@edit')->name('logout');
+Route::post('/login', 'AuthController@login')->name('login');
+Route::post('/logout', 'AuthController@logout')->name('logout');
 Route::get('/tag-list', 'OthersController@tagList')->name('tag-list');
 Route::post('/contact', 'OthersController@contact')->name('contact');
