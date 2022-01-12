@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GetTagsRequest;
+use App\Http\Requests\StoreFileRequest;
 use App\Models\Tag;
+use \Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\TagCollection;
 
 class OthersController extends Controller
@@ -105,5 +107,23 @@ class OthersController extends Controller
     public function contact()
     {
         return 'contact';
+    }
+
+    public function fileUpload(StoreFileRequest $request)
+    {
+        if ($file = $request->file_name) {
+            //保存するファイルに名前をつける
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            //Laravel直下のpublicディレクトリに新フォルダをつくり保存する
+            $target_path = public_path('/uploads/');
+            $file->move($target_path, $fileName);
+        }
+
+        return response()->json(
+            [
+                'path' => $target_path,
+            ],
+            Response::HTTP_CREATED
+        );
     }
 }
