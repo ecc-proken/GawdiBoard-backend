@@ -112,4 +112,3 @@ swagger:
 
 update-packages:
 	$(DC) exec app composer update
-	
