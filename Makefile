@@ -113,3 +113,6 @@ swagger:
 
 update-packages:
 	$(DC) exec app composer update
+
+code-format:
+	$(DC) exec app composer format
