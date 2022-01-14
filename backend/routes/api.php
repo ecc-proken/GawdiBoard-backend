@@ -63,4 +63,4 @@ Route::post('/login', 'OthersController@regist')->name('login');
 Route::post('/logout', 'OthersController@edit')->name('logout');
 Route::get('/tag-list', 'OthersController@tagList')->name('tag-list');
 Route::post('/contact', 'OthersController@contact')->name('contact');
-Route::post('/file-upload', 'OthersController@fileUpload')->name('fileUpload');
+Route::post('/file-upload', 'OthersController@fileUpload')->name('file-upload');
