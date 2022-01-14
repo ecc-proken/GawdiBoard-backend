@@ -23,7 +23,7 @@ class StoreFileRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        return [ //TODO: ピクセル：比率にのバリデーションを追加
             'file' => ['required', 'file', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
         ];
     }
