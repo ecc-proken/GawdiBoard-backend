@@ -112,6 +112,42 @@ class OthersController extends Controller
         return 'contact';
     }
 
+    #ファイルアップロード
+    /**
+     * @OA\Post(
+     *  path="/api/file-upload",
+     *  summary="ファイルアップロード",
+     *  description="画像データをサーバーにアップロードし、保存された画像のurlを返す。",
+     *  operationId="contact",
+     *  tags={"file"},
+     *  @OA\RequestBody(ref="#/components/requestBodies/file_upload_request_body"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="お問い合わせが送信された",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
+     */
     public function fileUpload(StoreFileRequest $request)
     {
         $image = Image::make($request->file('file'));
