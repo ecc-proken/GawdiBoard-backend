@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserProfileRequest;
 use App\Http\Requests\UpdateUserProfileRequest;
 use App\Http\Requests\GetUserPostedRequest;
+use App\Http\Requests\GetUserRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Offer;
@@ -67,7 +68,17 @@ class UserController extends Controller
         $student_number = 2180418;
         $login_user = User::findOrFail($student_number);
 
-        return $login_user;
+        return new UserResource($login_user);
+    }
+
+    public function single(GetUserRequest $request)
+    {
+        $student_number = $request->input('student_number');
+        # メールアドレスは取得しない
+        $user = User::select('student_number', 'user_name', 'link', 'self_introduction')
+            ->findOrFail($student_number);
+
+        return response()->json(['user' => $user]);
     }
 
     public function registEmail()
