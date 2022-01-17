@@ -50,40 +50,26 @@ class SendDeleteEmail extends Command
             ->whereDate('end_date', '=', date('Y-m-d', strtotime('+3 day')))
             ->get();
 
-        # 3日前の募集のユーザーにメール送信
-        foreach ($fetched_offers as $offer) {
+        $this->send_email($fetched_offers, '募集');
+        $this->send_email($fetched_promotions, '宣伝');
+    }
+
+    # send_email(DBから取ってきたコレクション, "募集" or "宣伝")
+    private function send_email($fetched_data, $type)
+    {
+        foreach ($fetched_data as $data) {
             #ユーザープロフィールのリンクとメールアドレスを取得
-            $user = User::findOrFail($offer->student_number);
+            $user = User::findOrFail($data->student_number);
             $profile_link = $user->getUserProfileLink();
             $to_email = $user->email;
 
             # メール送信に必要なオブジェクトを構成
             $mail_info = (object) [];
             $mail_info = (object) [
-                'type' => '募集',
-                'title' => $offer->title,
+                'type' => $type,
+                'title' => $data->title,
                 'profile' => $profile_link,
-                'end_date' => $offer->end_date,
-            ];
-
-            #メール送信をキューに格納 (送信先, メール情報)
-            SendDeleteNotification::dispatch($to_email, $mail_info);
-        }
-
-        # 3日前の宣伝のユーザーにメール送信
-        foreach ($fetched_promotions as $promotion) {
-            #ユーザープロフィールのリンクとメールアドレスを取得
-            $user = User::findOrFail($promotion->student_number);
-            $profile_link = $user->getUserProfileLink();
-            $to_email = $user->email;
-
-            # メール送信に必要なオブジェクトを構成
-            $mail_info = (object) [];
-            $mail_info = (object) [
-                'type' => '宣伝',
-                'title' => $promotion->title,
-                'profile' => $profile_link,
-                'end_date' => $promotion->end_date,
+                'end_date' => $data->end_date,
             ];
 
             #メール送信をキューに格納 (送信先, メール情報)
