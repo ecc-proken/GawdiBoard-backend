@@ -120,6 +120,7 @@ class PromotionController extends Controller
 
         # page番号 * 30件のデータを最新順で取得
         $fetched_promotions = $fetched_promotions
+            ->whereDate('end_date', '>=', date('Y-m-d'))
             ->latest('post_date')
             ->paginate(30);
 

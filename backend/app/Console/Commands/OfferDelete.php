@@ -42,8 +42,8 @@ class OfferDelete extends Command
     {
         // トランザクションの開始
         DB::transaction(function () {
-            # 戻り値は削除件数
-            $delete_offers = Offer::whereDate('end_date', '<', date('Y-m-d'))->delete();
+            # 戻り値は削除件数  掲載期間終了より1週間で削除
+            $delete_offers = Offer::whereDate('end_date', '<', date('Y-m-d', strtotime('-7 day')))->delete();
             $message = '[' . date('Y-m-d h:i:s') . '] 募集 : ' . $delete_offers . '件削除';
 
             //INFOレベルでメッセージを出力
