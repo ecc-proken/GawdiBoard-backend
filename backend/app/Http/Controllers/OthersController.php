@@ -141,6 +141,10 @@ class OthersController extends Controller
      *      response=500,
      *      description="不正なエラー",
      *  ),
+     * @OA\Response(
+     *      response=504,
+     *      description="大きなファイルのアップロード時に処理がタイムアウトした",
+     * ),
      *  @OA\Response(
      *      response=200,
      *      description="お問い合わせが送信された",
