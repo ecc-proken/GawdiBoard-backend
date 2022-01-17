@@ -31,6 +31,7 @@ init:
 	$(DC) exec app php artisan storage:link
 	$(DC) exec app chown -R $$UNAME:$$UNAME bootstrap/cache
 	@make fresh
+	@make swagger
 remake:
 	@make destroy
 	@make init
@@ -109,4 +110,9 @@ ide-helper:
 
 swagger:
 	$(DC) exec app php artisan l5-swagger:generate
-	
+
+update-packages:
+	$(DC) exec app composer update
+
+code-format:
+	$(DC) exec app composer format
