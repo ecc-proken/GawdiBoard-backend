@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GetTagsRequest;
+use App\Http\Requests\StoreFileRequest;
 use App\Models\Tag;
+use \Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\TagCollection;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
+use Illuminate\Http\Request;
 
 class OthersController extends Controller
 {
@@ -105,5 +110,36 @@ class OthersController extends Controller
     public function contact()
     {
         return 'contact';
+    }
+
+    public function fileUpload(StoreFileRequest $request)
+    {
+        $image = Image::make($request->file('file'));
+        $resized_image = $image->resize(
+            1200,
+            null,
+            function ($constraint) {
+                // 縦横比を保持したままにする
+                $constraint->aspectRatio();
+            }
+        )
+            ->encode('jpeg');
+
+        //変更を保存
+        $resized_image->save();
+
+        // 画像の名前を一意にするためhash化する。 putFile()の引数にFileクラスを取れないため。
+        $hash = md5($resized_image->__toString());
+        $path = "images/{$hash}.jpeg";
+
+        //sftpドライバーのディスクに保存 設定は backend/config/filesystems.php
+        Storage::disk('sftp')->put($path, $resized_image->__toString());
+
+        return response()->json(
+            [
+                'path' => $path,
+            ],
+            Response::HTTP_CREATED
+        );
     }
 }
