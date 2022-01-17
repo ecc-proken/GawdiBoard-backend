@@ -22,7 +22,7 @@ class SendDeleteEmail extends Command
      *
      * @var string
      */
-    protected $description = '掲載終了日より3日目の投稿のユーザーにメールを送信';
+    protected $description = '掲載終了日より3日前と当日の投稿のユーザーにメールを送信';
 
     /**
      * Create a new command instance.
@@ -41,13 +41,15 @@ class SendDeleteEmail extends Command
      */
     public function handle()
     {
-        # 掲載終了３日前の募集を一覧取得
+        # 掲載終了３日前と当日の募集を一覧取得
         $fetched_offers = Offer::whereDate('end_date', '=', date('Y-m-d', strtotime('+3 day')))
+            ->orWhereDate('end_date', '=', date('Y-m-d'))
             ->get();
 
-        # 掲載終了３日前の宣伝を一覧取得
+        # 掲載終了３日前と当日の宣伝を一覧取得
         $fetched_promotions = Promotion::with(['users', ])
             ->whereDate('end_date', '=', date('Y-m-d', strtotime('+3 day')))
+            ->orWhereDate('end_date', '=', date('Y-m-d'))
             ->get();
 
         $this->send_email($fetched_offers, '募集');

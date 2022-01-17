@@ -27,15 +27,27 @@ class DeleteNotification extends Mailable
      */
     public function build()
     {
-        # 現段階ではマークダウン記法で作成
-        return $this->markdown('mail.delete-notification')
-            ->with([
-                'type' => $this->info->type,
-                'title' => $this->info->title,
-                'profile' => $this->info->profile,
-                'end_date' => $this->info->end_date,
-            ])
-            # 件名
-            ->subject('もうすぐ掲載が終了します - Gawdi Board');
+        # 掲載終了日と3日前でビューを分ける
+        if ($this->info->end_date === date('Y-m-d')) {
+            return $this->markdown('mail.deleted-notification')
+                ->with([
+                    'type' => $this->info->type,
+                    'title' => $this->info->title,
+                    'profile' => $this->info->profile,
+                    'end_date' => $this->info->end_date,
+                ])
+                # 件名
+                ->subject('掲載が終了しました - Gawdi Board');
+        } elseif ($this->info->end_date === date('Y-m-d', strtotime('+3 day'))) {
+            return $this->markdown('mail.delete-notification')
+                ->with([
+                    'type' => $this->info->type,
+                    'title' => $this->info->title,
+                    'profile' => $this->info->profile,
+                    'end_date' => $this->info->end_date,
+                ])
+                # 件名
+                ->subject('もうすぐ掲載が終了します - Gawdi Board');
+        }
     }
 }
