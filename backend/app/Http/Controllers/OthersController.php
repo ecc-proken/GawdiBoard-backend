@@ -118,7 +118,7 @@ class OthersController extends Controller
      *  path="/api/file-upload",
      *  summary="ファイルアップロード",
      *  description="画像データをサーバーにアップロードし、保存された画像のurlを返す。",
-     *  operationId="contact",
+     *  operationId="fileUpload",
      *  tags={"file"},
      *  @OA\RequestBody(ref="#/components/requestBodies/file_upload_request_body"),
      *  @OA\Response(
@@ -134,6 +134,10 @@ class OthersController extends Controller
      *      description="アクセスが拒否されている",
      *  ),
      * @OA\Response(
+     *      response=413,
+     *      description="ファイルサイズが制限を超えている",
+     *  ),
+     * @OA\Response(
      *      response=422,
      *      description="セマンティックエラーにより、処理を実行できなかった",
      *  ),
@@ -143,7 +147,7 @@ class OthersController extends Controller
      *  ),
      * @OA\Response(
      *      response=504,
-     *      description="大きなファイルのアップロード時に処理がタイムアウトした",
+     *      description="ゲートウェイやプロキシに問題があり、タイムアウトした",
      * ),
      *  @OA\Response(
      *      response=200,

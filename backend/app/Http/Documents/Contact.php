@@ -9,11 +9,13 @@
  *       @OA\Property(
  *           property="contact_type",
  *           type="string",
+ *           example="バグの報告",
  *           description="お問い合わせの種類"
  *       ),
  *       @OA\Property(
  *           property="content",
  *           type="string",
+ *           example="〇〇画面のボタンを押すとよくわからない画面が出てくる",
  *           description="お問い合わせの内容",
  *       ),
  *   ),
