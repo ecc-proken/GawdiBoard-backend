@@ -68,6 +68,13 @@ class UserController extends Controller
         $student_number = 2180418;
         $login_user = User::findOrFail($student_number);
 
+        # 投稿数を取得する
+        $user_offers_count = Offer::where('student_number', '=', $student_number)
+            ->count();
+        $user_promotions_count = Promotion::where('student_number', '=', $student_number)
+            ->count();
+        $login_user->posted_count = $user_offers_count + $user_promotions_count;
+
         return $login_user;
     }
 
