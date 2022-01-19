@@ -16,6 +16,7 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\OfferCollection;
 use App\Http\Resources\PromotionCollection;
 use App\Http\Resources\WorkCollection;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -79,6 +80,15 @@ class UserController extends Controller
             ->findOrFail($student_number);
 
         return response()->json(['user' => $user]);
+      
+        # 投稿数を取得する
+        $user_offers_count = Offer::where('student_number', '=', $student_number)
+            ->count();
+        $user_promotions_count = Promotion::where('student_number', '=', $student_number)
+            ->count();
+        $login_user->posted_count = $user_offers_count + $user_promotions_count;
+
+        return $login_user;
     }
 
     public function registEmail()
@@ -100,7 +110,15 @@ class UserController extends Controller
             'tags.targets',
             'users',
         ])
-            ->where('student_number', '=', $student_number)
+            ->where('student_number', '=', $student_number);
+
+        # ログインユーザーと同一のリストである = 掲載終了した募集も取得
+        if ($student_number !== Auth::id()) {
+            $fetched_user_offers = $fetched_user_offers
+                ->whereDate('end_date', '>', now());
+        }
+
+        $fetched_user_offers = $fetched_user_offers
             ->latest('post_date')
             ->get();
 
@@ -116,7 +134,15 @@ class UserController extends Controller
             'tags.targets',
             'users',
         ])
-            ->where('student_number', '=', $student_number)
+            ->where('student_number', '=', $student_number);
+
+        # ログインユーザーと同一のリストである = 掲載終了した宣伝も取得
+        if ($student_number !== Auth::id()) {
+            $fetched_user_promotions = $fetched_user_promotions
+                ->whereDate('end_date', '>', now());
+        }
+
+        $fetched_user_promotions = $fetched_user_promotions
             ->latest('post_date')
             ->get();
 
