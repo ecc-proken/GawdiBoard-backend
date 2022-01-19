@@ -7,6 +7,7 @@ use App\Http\Requests\GetPromotionRequest;
 use App\Http\Requests\GetPromotionsRequest;
 use App\Http\Requests\StorePromotionRequest;
 use App\Http\Requests\UpdatePromotionRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Promotion;
 use App\Http\Resources\PromotionResource;
@@ -58,6 +59,7 @@ class PromotionController extends Controller
     #宣伝投稿API
     public function post(StorePromotionRequest $request)
     {
+        $student_number = Auth::id();
         $created_promotion = new Promotion();
 
         // トランザクションの開始
@@ -69,7 +71,7 @@ class PromotionController extends Controller
             $created_promotion->user_class = $request->input('user_class');
             $created_promotion->post_date = now()->format('Y-m-y');
             $created_promotion->end_date = $request->input('end_date');
-            $created_promotion->student_number = 2180418;
+            $created_promotion->student_number = $student_number;
             $created_promotion->save();
 
             $created_promotion->tags()->sync($request->input('promotion_tag_ids'));

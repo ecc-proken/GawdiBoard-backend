@@ -8,16 +8,6 @@ use App\Http\Resources\TagCollection;
 
 class OthersController extends Controller
 {
-    public function login()
-    {
-        return 'login';
-    }
-
-    public function logout()
-    {
-        return 'logout';
-    }
-
     public function tagList(GetTagsRequest $request)
     {
         $fetched_tags = Tag::with([

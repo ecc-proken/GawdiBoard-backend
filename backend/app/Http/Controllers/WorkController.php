@@ -13,6 +13,7 @@ use App\Http\Requests\StoreWorkRequest;
 use App\Http\Resources\WorkResource;
 use App\Http\Resources\WorkCollection;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class WorkController extends Controller
@@ -69,6 +70,7 @@ class WorkController extends Controller
      */
     public function post(StoreWorkRequest $request)
     {
+        $student_number = Auth::id();
         $created_work = new Work();
 
         DB::transaction(function () use ($request, $created_work) {
@@ -78,9 +80,7 @@ class WorkController extends Controller
             $created_work->picture = $request->input('picture');
             $created_work->link = $request->input('link');
             $created_work->post_date = now()->format('Y-m-y');
-
-            //TODO 一時的にランダムのユーザを使用しています。認証機能実装後変更する。
-            $created_work->student_number = User::inRandomOrder()->limit(1)->get('student_number')[0]->student_number;
+            $created_work->student_number = $student_number;
             $created_work->save();
 
             $created_work->tags()->sync($request->input('work_tag_ids'));
