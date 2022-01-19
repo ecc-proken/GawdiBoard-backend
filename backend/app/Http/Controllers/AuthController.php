@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Adldap\Laravel\Facades\Adldap;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -16,12 +14,21 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request)
     {
-        $credentials = $request->only('student_number', 'password');
-        $student_number = $credentials['student_number'];
-        $password = $credentials['password'];
+        $student_number = $request->student_number;
+        $password = $request->password;
+        $dn = $student_number . env('LDAP_ACCOUNT_SUFFIX');
 
-        if(Adldap::auth()->attempt($student_number, $password, $bindAsUser = true)){
+        $ldap_server = 'ldap://' . env('LDAP_HOSTS');
+        $ldap_connection = ldap_connect($ldap_server);
 
+        if ($ldap_connection === false) {
+            return response()->json('Connection failed', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $authenticated = @ldap_bind($ldap_connection, $dn, $password);
+        ldap_unbind($ldap_connection);
+
+        if ($authenticated) {
             $login_user = User::where('student_number', '=', $student_number)->first();
 
             if (is_null($login_user)) {
@@ -34,7 +41,8 @@ class AuthController extends Controller
                 $login_user = $registed_user;
             }
             
-            Auth::login($login_user, true);
+            Auth::login($login_user);
+            $request->session()->regenerate();
 
             return new UserResource($login_user);
         }
@@ -45,7 +53,9 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        return response()->json('logouted');
+        return http_response_code();
     }
 }
