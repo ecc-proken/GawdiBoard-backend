@@ -80,15 +80,15 @@ class UserController extends Controller
             ->findOrFail($student_number);
 
         return response()->json(['user' => $user]);
-      
+
         # 投稿数を取得する
         $user_offers_count = Offer::where('student_number', '=', $student_number)
             ->count();
         $user_promotions_count = Promotion::where('student_number', '=', $student_number)
             ->count();
-        $login_user->posted_count = $user_offers_count + $user_promotions_count;
+        $user->posted_count = $user_offers_count + $user_promotions_count;
 
-        return $login_user;
+        return $user;
     }
 
     public function registEmail()
