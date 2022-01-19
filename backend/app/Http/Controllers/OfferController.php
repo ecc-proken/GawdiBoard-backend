@@ -174,10 +174,13 @@ class OfferController extends Controller
      */
     public function post(StoreOfferRequest $request)
     {
+        $student_number = 9073372;
+        $this->validateUserPostedCount($student_number);
+
         $created_offer = new Offer();
 
         // トランザクションの開始
-        DB::transaction(function () use ($request, $created_offer) {
+        DB::transaction(function () use ($request, $created_offer, $student_number) {
             $created_offer->title = $request->input('title');
             $created_offer->target = $request->input('target');
             $created_offer->job = $request->input('job');
@@ -187,7 +190,7 @@ class OfferController extends Controller
             $created_offer->user_class = $request->input('user_class');
             $created_offer->post_date = now()->format('Y-m-y');
             $created_offer->end_date = $request->input('end_date');
-            $created_offer->student_number = 2180418;
+            $created_offer->student_number = $student_number;
             $created_offer->save();
 
             $created_offer->tags()->sync($request->input('offer_tag_ids'));
