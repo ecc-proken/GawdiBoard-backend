@@ -45,13 +45,13 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
 
-        # 認証できていない場合403
+        # 認証できていない場合401
         if ($exception instanceof UnauthorizedHttpException) {
             return response()->json(
                 [
                     'message' => $exception->getMessage(),
                 ],
-                Response::HTTP_FORBIDDEN
+                Response::HTTP_UNAUTHORIZED
             );
         }
 
