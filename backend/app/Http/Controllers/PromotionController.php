@@ -165,10 +165,13 @@ class PromotionController extends Controller
      */
     public function post(StorePromotionRequest $request)
     {
+        $student_number = 9073372;
+        $this->validateUserPostedCount($student_number);
+
         $created_promotion = new Promotion();
 
         // トランザクションの開始
-        DB::transaction(function () use ($request, $created_promotion) {
+        DB::transaction(function () use ($request, $created_promotion, $student_number) {
             $created_promotion->title = $request->input('title');
             $created_promotion->note = $request->input('note');
             $created_promotion->picture = $request->input('picture');
@@ -176,7 +179,7 @@ class PromotionController extends Controller
             $created_promotion->user_class = $request->input('user_class');
             $created_promotion->post_date = now()->format('Y-m-y');
             $created_promotion->end_date = $request->input('end_date');
-            $created_promotion->student_number = 2180418;
+            $created_promotion->student_number = $student_number;
             $created_promotion->save();
 
             $created_promotion->tags()->sync($request->input('promotion_tag_ids'));
