@@ -51,6 +51,7 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
     Route::post('regist', 'UserController@regist')->name('regist');
     Route::post('edit', 'UserController@edit')->name('edit');
     Route::get('whoami', 'UserController@whoami')->name('whoami');
+    Route::get('single', 'UserController@single')->name('single');
     Route::post('regist-email', 'UserController@registEmail')->name('regist-email');
     Route::post('edit-email', 'UserController@registEmail')->name('edit-email');
     Route::get('offer-list', 'UserController@offerList')->name('offer-list');
