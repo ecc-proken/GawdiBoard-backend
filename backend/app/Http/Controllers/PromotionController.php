@@ -7,6 +7,7 @@ use App\Http\Requests\GetPromotionRequest;
 use App\Http\Requests\GetPromotionsRequest;
 use App\Http\Requests\StorePromotionRequest;
 use App\Http\Requests\UpdatePromotionRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Promotion;
 use App\Http\Resources\PromotionResource;
@@ -165,7 +166,7 @@ class PromotionController extends Controller
      */
     public function post(StorePromotionRequest $request)
     {
-        $student_number = 9073372;
+        $student_number = Auth::id();
         $this->validateUserPostedCount($student_number);
 
         $created_promotion = new Promotion();

@@ -15,10 +15,11 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->unsignedBigInteger('student_number')->primary();
-            $table->string('user_name');
+            $table->string('user_name')->nullable();
             $table->string('email')->nullable();
             $table->string('link')->nullable();
             $table->string('self_introduction')->nullable();
+            $table->boolean('registered_flg')->default(false);
             $table->timestamps();
             $table->dropColumn('updated_at');
         });
