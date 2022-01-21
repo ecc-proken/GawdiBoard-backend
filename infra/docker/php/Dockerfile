@@ -13,12 +13,14 @@ ENV TZ='Asia/Tokyo' \
 COPY --from=composer:2.1 /usr/bin/composer /usr/bin/composer
 
 RUN apt-get update && \
-  apt-get -y install git libicu-dev libonig-dev libzip-dev libjpeg-dev libpng-dev zlib1g-dev unzip locales && \
+  apt-get -y install git libicu-dev libonig-dev libzip-dev libjpeg-dev libpng-dev zlib1g-dev unzip locales libldap2-dev && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* && \
   locale-gen ja_JP.UTF-8 && \
   localedef -f UTF-8 -i ja_JP ja_JP.UTF-8 && \
   mkdir /var/run/php-fpm && \
+  docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu && \
+  docker-php-ext-install intl pdo_mysql zip bcmath ldap && \
   composer config -g process-timeout 3600 && \
   composer config -g repos.packagist composer https://packagist.org
 

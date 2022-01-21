@@ -13,7 +13,6 @@ class StoreUserProfileRequest extends FormRequest
      */
     public function authorize()
     {
-        # 認証が出来次第false
         return true;
     }
 
@@ -25,7 +24,6 @@ class StoreUserProfileRequest extends FormRequest
     public function rules()
     {
         return [
-            'student_number' => ['required', 'integer', 'digits:7'], #数値かつ7桁
             'user_name' => ['required', 'string', 'max:50'],
             'link' => ['present', 'url', 'max:255'],
             'self_introduction' => ['present', 'string', 'max:255'],

@@ -13,7 +13,6 @@ class GetUserPostedRequest extends FormRequest
      */
     public function authorize()
     {
-        # 認証が出来次第false
         return true;
     }
 

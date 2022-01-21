@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserProfileRequest;
 use App\Http\Requests\UpdateUserProfileRequest;
 use App\Http\Requests\GetUserPostedRequest;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\GetUserRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
@@ -22,9 +23,10 @@ class UserController extends Controller
 {
     public function regist(StoreUserProfileRequest $request)
     {
-        $student_number = $request->input('student_number');
-        # 登録済みの場合422を返却
-        if (User::where('student_number', '=', $student_number)->first()) {
+        $registed_user = Auth::user();
+        
+        # プロフィール登録済みの場合422を返却
+        if ($registed_user->registered_flg) {
             return response()->json(
                 [
                     'message' => 'User already exists',
@@ -32,13 +34,13 @@ class UserController extends Controller
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
-        $registed_user = new User();
+
         // トランザクションの開始
-        DB::transaction(function () use ($request, $registed_user, $student_number) {
-            $registed_user->student_number = $student_number;
+        DB::transaction(function () use ($request, $registed_user) {
             $registed_user->user_name = $request->input('user_name');
             $registed_user->link = $request->input('link');
             $registed_user->self_introduction = $request->input('self_introduction');
+            $registed_user->registered_flg = true;
             $registed_user->save();
         });
 
@@ -47,13 +49,20 @@ class UserController extends Controller
 
     public function edit(UpdateUserProfileRequest $request)
     {
-        #TODO : ユーザー認証済みの場合学籍番号取得
-        $student_number = 2180418;
-        $updated_user = User::findOrFail($student_number);
+        $updated_user = Auth::user();
+
+        # プロフィール登録済みでない場合422を返却
+        if ($updated_user->registered_flg == false) {
+            return response()->json(
+                [
+                    'message' => 'User already exists',
+                ],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
 
         // トランザクションの開始
         DB::transaction(function () use ($request, $updated_user, $student_number) {
-            $updated_user->student_number = $student_number;
             $updated_user->user_name = $request->input('user_name');
             $updated_user->link = $request->input('link');
             $updated_user->self_introduction = $request->input('self_introduction');
@@ -65,9 +74,7 @@ class UserController extends Controller
 
     public function whoami()
     {
-        #TODO : ユーザー認証済みの場合学籍番号取得
-        $student_number = 2180418;
-        $login_user = User::findOrFail($student_number);
+        $login_user = Auth::user();
 
         return new UserResource($login_user);
     }

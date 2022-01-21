@@ -13,7 +13,6 @@ class DestroyOfferRequest extends FormRequest
      */
     public function authorize()
     {
-        # TODO: ユーザー認証が出来次第ロジックを記入
         return true;
     }
 

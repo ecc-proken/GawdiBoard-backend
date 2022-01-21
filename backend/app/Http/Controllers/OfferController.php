@@ -8,6 +8,7 @@ use App\Http\Requests\GetOffersRequest;
 use App\Http\Requests\StoreOfferRequest;
 use App\Http\Requests\UpdateOfferRequest;
 use App\Http\Requests\PostOfferApplyRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Offer;
 use App\Models\User;
@@ -16,10 +17,6 @@ use App\Http\Resources\OfferCollection;
 use App\Jobs\SendOfferApplyEmail;
 use App\Jobs\SendOfferCompletedEmail;
 use \Symfony\Component\HttpFoundation\Response;
-
-/*
-    TODO: ログインユーザーの学籍番号を取得する
-*/
 
 class OfferController extends Controller
 {
@@ -174,9 +171,9 @@ class OfferController extends Controller
      */
     public function post(StoreOfferRequest $request)
     {
-        $student_number = 9073372;
+        $student_number = Auth::id();
         $this->validateUserPostedCount($student_number);
-
+        
         $created_offer = new Offer();
 
         // トランザクションの開始
@@ -366,11 +363,10 @@ class OfferController extends Controller
         $owner_email = $fetched_offer->users->email;
 
         #応募者の情報
-        $applicant_student_number = $request->input('student_number');
-        $applicant = User::findOrFail($applicant_student_number);
+        $applicant = Auth::user();
         $applicant_email = $applicant->email;
 
-        if ($owner_student_number === $applicant_student_number) {
+        if ($owner_student_number === $applicant->student_number) {
             return response()->json(
                 [
                     'message' => '応募者と募集主が同一です。',
@@ -382,7 +378,7 @@ class OfferController extends Controller
         #OfferApplyクラスに渡すオブジェクトを構成
         $mail_info = (object) [];
         $mail_info = (object) [
-            'student_number' => $applicant_student_number,
+            'student_number' => $applicant->student_number,
             'user_name' => $applicant->user_name,
             'title' => $fetched_offer->title,
             'profile' => $applicant->getUserProfileLink(),

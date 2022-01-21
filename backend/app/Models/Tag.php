@@ -23,6 +23,6 @@ class Tag extends Model
     # タグに紐づいたターゲットを取得
     public function targets()
     {
-        return $this->belongsTo(Tagtarget::class, 'tag_target_id');
+        return $this->belongsTo(TagTarget::class, 'tag_target_id');
     }
 }
