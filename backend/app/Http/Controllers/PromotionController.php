@@ -16,6 +16,41 @@ use App\Http\Resources\PromotionCollection;
 class PromotionController extends Controller
 {
     #宣伝取得API
+    /**
+     * @OA\Get(
+     *  path="/api/promotion/single",
+     *  summary="宣伝取得",
+     *  description="投稿された宣伝を一件取得する (要ログイン)",
+     *  operationId="getPromotionSingle",
+     *  tags={"promotion"},
+     *  @OA\Parameter(ref="#/components/parameters/promotion_get_single"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
+     */
     public function single(GetPromotionRequest $request)
     {
         $fetched_promotion = Promotion::with([
@@ -30,6 +65,42 @@ class PromotionController extends Controller
     }
 
     #宣伝一覧API
+    /**
+     * @OA\Get(
+     *  path="/api/promotion/list",
+     *  summary="宣伝一覧",
+     *  description="投稿された宣伝一覧を取得する (要ログイン)",
+     *  operationId="getPromotionList",
+     *  tags={"promotion"},
+     *  @OA\Parameter(ref="#/components/parameters/promotion_get_list_tag_ids"),
+     *  @OA\Parameter(ref="#/components/parameters/promotion_get_list_page"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
+     */
     public function list(GetPromotionsRequest $request)
     {
         $promotion_tags = $request->input('promotion_tag_ids');
@@ -50,6 +121,7 @@ class PromotionController extends Controller
 
         # page番号 * 30件のデータを最新順で取得
         $fetched_promotions = $fetched_promotions
+            ->whereDate('end_date', '>=', date('Y-m-d'))
             ->latest('post_date')
             ->paginate(30);
 
@@ -57,9 +129,46 @@ class PromotionController extends Controller
     }
 
     #宣伝投稿API
+    /**
+     * @OA\Post(
+     *  path="/api/promotion/post",
+     *  summary="宣伝投稿",
+     *  description="宣伝を投稿する　(要ログイン)",
+     *  operationId="postPromotion",
+     *  tags={"promotion"},
+     *  @OA\RequestBody(ref="#/components/requestBodies/post_promotion_request_body"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=201,
+     *      description="宣伝が投稿された",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
+     */
     public function post(StorePromotionRequest $request)
     {
         $student_number = Auth::id();
+        $this->validateUserPostedCount($student_number);
+
         $created_promotion = new Promotion();
 
         // トランザクションの開始
@@ -84,6 +193,41 @@ class PromotionController extends Controller
     }
 
     #宣伝編集API
+    /**
+     * @OA\Post(
+     *  path="/api/promotion/edit",
+     *  summary="宣伝編集",
+     *  description="投稿された宣伝を編集する (要ログイン)",
+     *  operationId="editPromotion",
+     *  tags={"promotion"},
+     *  @OA\RequestBody(ref="#/components/requestBodies/edit_promotion_request_body"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="宣伝が編集された",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
+     */
     public function edit(UpdatePromotionRequest $request)
     {
         $updated_promotion = Promotion::with([
@@ -117,6 +261,41 @@ class PromotionController extends Controller
     }
 
     #宣伝削除API
+    /**
+     * @OA\Post(
+     *  path="/api/promotion/delete",
+     *  summary="宣伝削除",
+     *  description="投稿された宣伝を削除する (要ログイン)",
+     *  operationId="destroyOffer",
+     *  tags={"promotion"},
+     *  @OA\RequestBody(ref="#/components/requestBodies/destroy_promotion_request_body"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="宣伝が編集された",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
+     */
     public function delete(DestroyPromotionRequest $request)
     {
         // トランザクションの開始

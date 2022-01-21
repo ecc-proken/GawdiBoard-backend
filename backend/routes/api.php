@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('regist', 'UserController@regist')->name('regist');
         Route::post('edit', 'UserController@edit')->name('edit');
         Route::get('whoami', 'UserController@whoami')->name('whoami');
+        Route::get('single', 'UserController@single')->name('single');
         Route::post('regist-email', 'UserController@registEmail')->name('regist-email');
         Route::post('edit-email', 'UserController@registEmail')->name('edit-email');
         Route::get('offer-list', 'UserController@offerList')->name('offer-list');
@@ -56,6 +57,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // その他
     Route::post('/contact', 'OthersController@contact')->name('contact');
+    Route::post('/file-upload', 'OthersController@fileUpload')->name('file-upload');
 });
 
 // 作品APIグループ

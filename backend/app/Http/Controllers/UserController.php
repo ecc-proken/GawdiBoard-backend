@@ -6,6 +6,7 @@ use App\Http\Requests\StoreUserProfileRequest;
 use App\Http\Requests\UpdateUserProfileRequest;
 use App\Http\Requests\GetUserPostedRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\GetUserRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Offer;
@@ -16,6 +17,7 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\OfferCollection;
 use App\Http\Resources\PromotionCollection;
 use App\Http\Resources\WorkCollection;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -77,6 +79,25 @@ class UserController extends Controller
         return new UserResource($login_user);
     }
 
+    public function single(GetUserRequest $request)
+    {
+        $student_number = $request->input('student_number');
+        # メールアドレスは取得しない
+        $user = User::select('student_number', 'user_name', 'link', 'self_introduction')
+            ->findOrFail($student_number);
+
+        return response()->json(['user' => $user]);
+
+        # 投稿数を取得する
+        $user_offers_count = Offer::where('student_number', '=', $student_number)
+            ->count();
+        $user_promotions_count = Promotion::where('student_number', '=', $student_number)
+            ->count();
+        $user->posted_count = $user_offers_count + $user_promotions_count;
+
+        return $user;
+    }
+
     public function registEmail()
     {
         return 'regist-email';
@@ -96,7 +117,15 @@ class UserController extends Controller
             'tags.targets',
             'users',
         ])
-            ->where('student_number', '=', $student_number)
+            ->where('student_number', '=', $student_number);
+
+        # ログインユーザーと同一のリストである = 掲載終了した募集も取得
+        if ($student_number !== Auth::id()) {
+            $fetched_user_offers = $fetched_user_offers
+                ->whereDate('end_date', '>', now());
+        }
+
+        $fetched_user_offers = $fetched_user_offers
             ->latest('post_date')
             ->get();
 
@@ -112,7 +141,15 @@ class UserController extends Controller
             'tags.targets',
             'users',
         ])
-            ->where('student_number', '=', $student_number)
+            ->where('student_number', '=', $student_number);
+
+        # ログインユーザーと同一のリストである = 掲載終了した宣伝も取得
+        if ($student_number !== Auth::id()) {
+            $fetched_user_promotions = $fetched_user_promotions
+                ->whereDate('end_date', '>', now());
+        }
+
+        $fetched_user_promotions = $fetched_user_promotions
             ->latest('post_date')
             ->get();
 

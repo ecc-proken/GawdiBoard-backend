@@ -25,7 +25,7 @@ class OfferController extends Controller
      * @OA\Get(
      *  path="/api/offer/single",
      *  summary="募集取得",
-     *  description="ユーザのフォロワーを一覧取得する",
+     *  description="投稿された募集を一件取得する (要ログイン)",
      *  operationId="getOfferSingle",
      *  tags={"offer"},
      *  @OA\Parameter(ref="#/components/parameters/offer_get_single"),
@@ -126,6 +126,7 @@ class OfferController extends Controller
 
         # page番号 * 30件のデータを最新順で取得
         $fetched_offers = $fetched_offers
+            ->whereDate('end_date', '>=', date('Y-m-d'))
             ->latest('post_date')
             ->paginate(30);
 
@@ -171,6 +172,8 @@ class OfferController extends Controller
     public function post(StoreOfferRequest $request)
     {
         $student_number = Auth::id();
+        $this->validateUserPostedCount($student_number);
+        
         $created_offer = new Offer();
 
         // トランザクションの開始

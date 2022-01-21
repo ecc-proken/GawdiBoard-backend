@@ -18,8 +18,41 @@ use Illuminate\Support\Facades\DB;
 
 class WorkController extends Controller
 {
+    #作品取得API
     /**
-     * 作品取得API
+     * @OA\Get(
+     *  path="/api/work/single",
+     *  summary="作品取得",
+     *  description="投稿された作品を一件取得する",
+     *  operationId="getWorkSingle",
+     *  tags={"work"},
+     *  @OA\Parameter(ref="#/components/parameters/work_get_single"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
      */
     public function single(GetWorkRequest $request)
     {
@@ -35,8 +68,42 @@ class WorkController extends Controller
         return new WorkResource($fetched_work);
     }
 
+    #作品一覧API
     /**
-     * 作品一覧API
+     * @OA\Get(
+     *  path="/api/work/list",
+     *  summary="作品一覧",
+     *  description="投稿された作品一覧を取得する",
+     *  operationId="getWorkList",
+     *  tags={"work"},
+     *  @OA\Parameter(ref="#/components/parameters/work_get_list_tag_ids"),
+     *  @OA\Parameter(ref="#/components/parameters/work_get_list_page"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
      */
     public function list(GetWorksRequest $request)
     {
@@ -65,8 +132,41 @@ class WorkController extends Controller
         return new WorkCollection($fetched_works);
     }
 
+    #作品投稿API
     /**
-     * 作品投稿API
+     * @OA\Post(
+     *  path="/api/work/post",
+     *  summary="作品投稿",
+     *  description="作品を投稿する　(要ログイン)",
+     *  operationId="postWork",
+     *  tags={"work"},
+     *  @OA\RequestBody(ref="#/components/requestBodies/post_work_request_body"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=201,
+     *      description="作品が投稿された",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
      */
     public function post(StoreWorkRequest $request)
     {
@@ -91,8 +191,41 @@ class WorkController extends Controller
         return new WorkResource($created_work);
     }
 
+    #作品編集API
     /**
-     * 作品編集API
+     * @OA\Post(
+     *  path="/api/work/edit",
+     *  summary="作品編集",
+     *  description="投稿された作品を編集する (要ログイン)",
+     *  operationId="editWork",
+     *  tags={"work"},
+     *  @OA\RequestBody(ref="#/components/requestBodies/edit_work_request_body"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="作品が編集された",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
      */
     public function edit(UpdateWorkRequest $request)
     {
@@ -125,8 +258,41 @@ class WorkController extends Controller
         return new WorkResource($updated_work);
     }
 
+    #作品削除API
     /**
-     * 作品削除API
+     * @OA\Post(
+     *  path="/api/work/delete",
+     *  summary="作品削除",
+     *  description="投稿された作品を削除する (要ログイン)",
+     *  operationId="destroyWork",
+     *  tags={"work"},
+     *  @OA\RequestBody(ref="#/components/requestBodies/destroy_work_request_body"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="作品が削除された",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
      */
     public function delete(DestroyWorkRequest $request)
     {
