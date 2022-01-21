@@ -63,7 +63,7 @@ class PromotionController extends Controller
         $created_promotion = new Promotion();
 
         // トランザクションの開始
-        DB::transaction(function () use ($request, $created_promotion) {
+        DB::transaction(function () use ($request, $created_promotion, $student_number) {
             $created_promotion->title = $request->input('title');
             $created_promotion->note = $request->input('note');
             $created_promotion->picture = $request->input('picture');

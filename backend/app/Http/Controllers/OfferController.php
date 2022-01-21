@@ -174,7 +174,7 @@ class OfferController extends Controller
         $created_offer = new Offer();
 
         // トランザクションの開始
-        DB::transaction(function () use ($request, $created_offer) {
+        DB::transaction(function () use ($request, $created_offer, $student_number) {
             $created_offer->title = $request->input('title');
             $created_offer->target = $request->input('target');
             $created_offer->job = $request->input('job');

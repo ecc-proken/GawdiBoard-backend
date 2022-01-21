@@ -73,7 +73,7 @@ class WorkController extends Controller
         $student_number = Auth::id();
         $created_work = new Work();
 
-        DB::transaction(function () use ($request, $created_work) {
+        DB::transaction(function () use ($request, $created_work, $student_number) {
             $created_work->title = $request->input('title');
             $created_work->short_description = $request->input('short_description');
             $created_work->note = $request->input('note');
