@@ -20,7 +20,6 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-
     #ユーザプロフィール登録
     /**
      * @OA\Post(
