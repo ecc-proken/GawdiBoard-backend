@@ -9,6 +9,7 @@ services:
     build:
       context: .
       dockerfile: ./infra/docker/php/Dockerfile
+    tty: true
     container_name: 'gawdiboard-app'
     volumes:
       - type: volume
@@ -31,8 +32,6 @@ services:
       - DB_DATABASE=${DB_NAME:-laravel_local}
       - DB_USERNAME=${DB_USER:-phper}
       - DB_PASSWORD=${DB_PASS:-secret}
-    command: > 
-      bash -c 'php artisan queue:work'
 
   web:
     build:
@@ -78,3 +77,26 @@ services:
       - MYSQL_USER=${DB_USER:-phper}
       - MYSQL_PASSWORD=${DB_PASS:-secret}
       - MYSQL_ROOT_PASSWORD=${DB_PASS:-secret}
+
+  cron:
+    build:
+      context: .
+      dockerfile: ./infra/docker/cron/Dockerfile
+    tty: true
+    container_name: 'gawdiboard-cron'
+    volumes:
+      - type: volume
+        source: php-fpm-socket
+        target: /var/run/php-fpm
+        volume:
+          nocopy: true
+      - type: bind
+        source: ./backend
+        target: /work/backend
+      - type: volume
+        source: psysh-store
+        target: /root/.config/psysh
+        volume:
+          nocopy: true
+    depends_on:
+      - app
