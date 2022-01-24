@@ -8,7 +8,6 @@ use \App\Console\Commands\OfferDelete;
 use \App\Console\Commands\PromotionDelete;
 use \App\Console\Commands\SendDeleteEmail;
 use \App\Console\Commands\UserDelete;
-use \App\Console\Commands\WriteLog;
 
 class Kernel extends ConsoleKernel
 {
@@ -22,7 +21,6 @@ class Kernel extends ConsoleKernel
         PromotionDelete::class,
         SendDeleteEmail::class,
         UserDelete::class,
-        WriteLog::class,
     ];
 
     /**
