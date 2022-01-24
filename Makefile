@@ -70,6 +70,8 @@ web:
 	$(DC) exec web bash
 app:
 	$(DC) exec app bash
+cron:
+	$(DC) exec cron bash
 migrate:
 	$(DC) exec app php artisan migrate
 fresh:
