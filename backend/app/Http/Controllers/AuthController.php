@@ -16,9 +16,9 @@ class AuthController extends Controller
     {
         $student_number = $request->student_number;
         $password = $request->password;
-        $dn = $student_number . env('LDAP_ACCOUNT_SUFFIX');
+        $dn = $student_number . config('ldap.ldap_account_suffix');
 
-        $ldap_server = 'ldap://' . env('LDAP_HOSTS');
+        $ldap_server = 'ldap://' . config('ldap.ldap_host');
         $ldap_connection = ldap_connect($ldap_server);
 
         if ($ldap_connection === false) {
@@ -26,9 +26,10 @@ class AuthController extends Controller
         }
 
         $authenticated = @ldap_bind($ldap_connection, $dn, $password);
-        ldap_unbind($ldap_connection);
 
         if ($authenticated) {
+            ldap_unbind($ldap_connection);
+
             $login_user = User::where('student_number', '=', $student_number)->first();
 
             if (is_null($login_user)) {
