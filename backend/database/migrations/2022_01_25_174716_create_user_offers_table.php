@@ -15,7 +15,9 @@ class CreateUserOffersTable extends Migration
     {
         Schema::create('user_offers', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->unsignedBigInteger('student_number');
+            $table->foreign('student_number')->references('student_number')->on('users')->cascadeOnDelete();
+            $table->foreignId('offer_id')->constrained()->cascadeOnDelete();
         });
     }
 
