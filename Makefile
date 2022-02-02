@@ -71,8 +71,8 @@ app:
 	$(DC) exec app bash
 cron:
 	$(DC) exec cron bash
-supervisor:
-	$(DC) exec supervisor bash
+worker:
+	$(DC) exec worker bash
 migrate:
 	$(DC) exec app php artisan migrate
 fresh:

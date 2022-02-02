@@ -101,12 +101,12 @@ services:
     depends_on:
       - app
 
-  supervisor:
+  worker:
     build:
       context: .
       dockerfile: ./infra/docker/php/Dockerfile
     tty: true
-    container_name: 'gawdiboard-supervisor'
+    container_name: 'gawdiboard-worker'
     volumes:
       - type: volume
         source: php-fpm-socket
