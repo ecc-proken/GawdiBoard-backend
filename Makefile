@@ -24,7 +24,6 @@ install-recommend-packages:
 	$(DC) exec app php artisan vendor:publish --provider="Barryvdh\Debugbar\ServiceProvider"
 init:
 	$(DC) up -d --build
-	sh ./infra/docker/mysql/init.sh
 	$(DC) exec app composer install
 	$(DC) exec app cp .env.example .env
 	$(DC) exec app php artisan key:generate
@@ -72,6 +71,8 @@ app:
 	$(DC) exec app bash
 cron:
 	$(DC) exec cron bash
+supervisor:
+	$(DC) exec supervisor bash
 migrate:
 	$(DC) exec app php artisan migrate
 fresh:
