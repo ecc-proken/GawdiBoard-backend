@@ -74,7 +74,7 @@ class AuthController extends Controller
 
                 $login_user = $registed_user;
             }
-            
+
             Auth::login($login_user);
             $request->session()->regenerate();
 
