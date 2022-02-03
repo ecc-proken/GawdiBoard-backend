@@ -12,6 +12,39 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
+    #ログインAPI
+    /**
+     * @OA\Post(
+     *  path="/login",
+     *  summary="ログイン(事前に認証クッキーを取得すること)",
+     *  description="ユーザーが存在するか学校の認証サーバーに問い合わせる。存在する場合ユーザーの登録情報を返す。",
+     *  operationId="logIn",
+     *  tags={"auth"},
+     *  security={{"bearer_token":{}}},
+     *  @OA\RequestBody(ref="#/components/requestBodies/post_login_request_body"),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=204,
+     *      description="ログインに成功",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
+     */
     public function login(LoginRequest $request)
     {
         $student_number = $request->student_number;
@@ -51,6 +84,37 @@ class AuthController extends Controller
         return response()->json('unauthorized', Response::HTTP_UNAUTHORIZED);
     }
 
+    #ログアウトAPI
+    /**
+     * @OA\Post(
+     *  path="/logout",
+     *  summary="ログアウト",
+     *  description="ログインユーザーをログアウトする。cookieが削除され、現在のユーザートークンが無効化される。",
+     *  operationId="logOut",
+     *  tags={"auth"},
+     *  security={{"bearer_token":{}}},
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="ログアウトに成功",
+     *  ),
+     * )
+     */
     public function logout(Request $request)
     {
         Auth::logout();
