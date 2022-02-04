@@ -11,7 +11,6 @@ use App\Http\Requests\PostOfferApplyRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Offer;
-use App\Models\User;
 use App\Http\Resources\OfferResource;
 use App\Http\Resources\OfferCollection;
 use App\Jobs\SendOfferApplyEmail;
@@ -141,6 +140,7 @@ class OfferController extends Controller
      *  description="募集を投稿する　(要ログイン)",
      *  operationId="postOffer",
      *  tags={"offer"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/post_offer_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -173,7 +173,7 @@ class OfferController extends Controller
     {
         $student_number = Auth::id();
         $this->validateUserPostedCount($student_number);
-        
+
         $created_offer = new Offer();
 
         // トランザクションの開始
@@ -207,6 +207,7 @@ class OfferController extends Controller
      *  description="投稿された募集を編集する (要ログイン)",
      *  operationId="editOffer",
      *  tags={"offer"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/edit_offer_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -277,6 +278,7 @@ class OfferController extends Controller
      *  description="投稿された募集を削除する (要ログイン)",
      *  operationId="destroyOffer",
      *  tags={"offer"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/destroy_offer_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -326,6 +328,7 @@ class OfferController extends Controller
      *               自分が投稿した募集に応募しようとした場合403Forbiddenが返却される",
      *  operationId="applyOffer",
      *  tags={"offer"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/apply_offer_request_body"),
      *  @OA\Response(
      *      response=401,

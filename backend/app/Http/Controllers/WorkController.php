@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Work;
-use App\Models\User;
 
 use App\Http\Requests\GetWorkRequest;
 use App\Http\Requests\GetWorksRequest;
@@ -140,6 +139,7 @@ class WorkController extends Controller
      *  description="作品を投稿する　(要ログイン)",
      *  operationId="postWork",
      *  tags={"work"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/post_work_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -199,6 +199,7 @@ class WorkController extends Controller
      *  description="投稿された作品を編集する (要ログイン)",
      *  operationId="editWork",
      *  tags={"work"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/edit_work_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -266,6 +267,7 @@ class WorkController extends Controller
      *  description="投稿された作品を削除する (要ログイン)",
      *  operationId="destroyWork",
      *  tags={"work"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/destroy_work_request_body"),
      *  @OA\Response(
      *      response=401,

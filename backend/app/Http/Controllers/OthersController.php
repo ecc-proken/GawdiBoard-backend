@@ -69,6 +69,7 @@ class OthersController extends Controller
      *  description="お問い合わせの内容を管理者のメールに送信する。お問い合わせの送信者にも確認メールが送信される。",
      *  operationId="contact",
      *  tags={"contact"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/contact_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -110,6 +111,7 @@ class OthersController extends Controller
      *  description="画像データをサーバーにアップロードし、保存された画像のurlを返す。",
      *  operationId="fileUpload",
      *  tags={"file"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/file_upload_request_body"),
      *  @OA\Response(
      *      response=401,
