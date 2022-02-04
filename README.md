@@ -18,7 +18,9 @@ $ make init
 ```bash
 ├── app
 ├── web
-└── db
+├── db
+├── cron
+└── worker
 ```
 
 ### app
@@ -36,6 +38,16 @@ $ make init
 
 -   ベースイメージ
     -   [mysql](https://hub.docker.com/_/mysql):8.0
+
+### cron
+
+-   ベースイメージ
+    -   [php](https://hub.docker.com/_/php):8.0.12-fpm-bullseye
+
+### worker
+
+-   ベースイメージ
+    -   [php](https://hub.docker.com/_/php):8.0.12-fpm-bullseye
 
 ## APIドキュメント
 ```bash
