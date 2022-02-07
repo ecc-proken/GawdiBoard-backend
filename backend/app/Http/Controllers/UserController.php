@@ -318,19 +318,26 @@ class UserController extends Controller
     {
         $student_number = $request->input('student_number');
         # ログインユーザーのプロフィールでないなら取得しない
-        if ($student_number === Auth::id()) {
-            $fetched_applied_offers = UserOffer::with([
-                'offers',
-                'offers.tags',
-                'offers.tags.genres',
-                'offers.tags.targets',
-                'offers.users',
-            ])
-                ->where('student_number', '=', $student_number)
-                ->get();
-
-            return new AppliedOfferCollection($fetched_applied_offers);
+        if ($student_number !== Auth::id()) {
+            return response()->json(
+                [
+                    'message' => 'ログインユーザー以外が応募した募集は取得できません',
+                ],
+                Response::HTTP_FORBIDDEN
+            );
         }
+
+        $fetched_applied_offers = UserOffer::with([
+            'offers',
+            'offers.tags',
+            'offers.tags.genres',
+            'offers.tags.targets',
+            'offers.users',
+        ])
+            ->where('student_number', '=', $student_number)
+            ->get();
+
+        return new AppliedOfferCollection($fetched_applied_offers);
     }
 
     #ユーザー宣伝一覧
