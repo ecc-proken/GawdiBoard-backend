@@ -326,9 +326,7 @@ class UserController extends Controller
                 'offers.tags.targets',
                 'offers.users',
             ])
-                ->where('student_number', '=', $student_number);
-
-            $fetched_applied_offers = $fetched_applied_offers
+                ->where('student_number', '=', $student_number)
                 ->get();
 
             return new AppliedOfferCollection($fetched_applied_offers);
