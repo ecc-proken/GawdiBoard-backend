@@ -9,10 +9,12 @@ use App\Http\Requests\GetUserRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Offer;
+use App\Models\UserOffer;
 use App\Models\Work;
 use App\Models\Promotion;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\AppliedOfferCollection;
 use App\Http\Resources\OfferCollection;
 use App\Http\Resources\PromotionCollection;
 use App\Http\Resources\WorkCollection;
@@ -59,7 +61,7 @@ class UserController extends Controller
     public function regist(StoreUserProfileRequest $request)
     {
         $registed_user = Auth::user();
-        
+
         # プロフィール登録済みの場合422を返却
         if ($registed_user->registered_flg) {
             return response()->json(
@@ -120,7 +122,6 @@ class UserController extends Controller
      */
     public function edit(UpdateUserProfileRequest $request)
     {
-
         $updated_user = Auth::user();
 
         # プロフィール登録済みでない場合422を返却
@@ -134,7 +135,7 @@ class UserController extends Controller
         }
 
         // トランザクションの開始
-        DB::transaction(function () use ($request, $updated_user, $student_number) {
+        DB::transaction(function () use ($request, $updated_user) {
             $updated_user->user_name = $request->input('user_name');
             $updated_user->link = $request->input('link');
             $updated_user->self_introduction = $request->input('self_introduction');
@@ -181,7 +182,6 @@ class UserController extends Controller
      */
     public function whoami()
     {
-
         $login_user = Auth::user();
 
         return new UserResource($login_user);
@@ -312,6 +312,27 @@ class UserController extends Controller
             ->get();
 
         return new OfferCollection($fetched_user_offers);
+    }
+
+    public function appliedOfferList(GetUserPostedRequest $request)
+    {
+        $student_number = $request->input('student_number');
+        # ログインユーザーのプロフィールでないなら取得しない
+        if ($student_number === Auth::id()) {
+            $fetched_applied_offers = UserOffer::with([
+                'offers',
+                'offers.tags',
+                'offers.tags.genres',
+                'offers.tags.targets',
+                'offers.users',
+            ])
+                ->where('student_number', '=', $student_number);
+
+            $fetched_applied_offers = $fetched_applied_offers
+                ->get();
+
+            return new AppliedOfferCollection($fetched_applied_offers);
+        }
     }
 
     #ユーザー宣伝一覧
