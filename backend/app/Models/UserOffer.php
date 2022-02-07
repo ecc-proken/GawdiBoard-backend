@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class UserOffer extends Model
 {
     use HasFactory;
+
+    # ユーザーに紐づいた募集を取得
+    public function offers()
+    {
+        return $this->belongsTo(Offer::class, 'offer_id');
+    }
 }

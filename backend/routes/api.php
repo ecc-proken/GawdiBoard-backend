@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -51,6 +50,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('regist-email', 'UserController@registEmail')->name('regist-email');
         Route::post('edit-email', 'UserController@registEmail')->name('edit-email');
         Route::get('offer-list', 'UserController@offerList')->name('offer-list');
+        Route::get('applied-offer-list', 'UserController@appliedOfferList')->name('applied-offer-list');
         Route::get('promotion-list', 'UserController@promotionList')->name('promotion-list');
         Route::get('work-list', 'UserController@workList')->name('work-list');
     });
