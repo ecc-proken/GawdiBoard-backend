@@ -24,7 +24,6 @@ class PostOfferApplyRequest extends FormRequest
     public function rules()
     {
         return [
-            'student_number' => ['required', 'integer', 'digits:7'], #数値かつ7桁
             'offer_id' => ['required', 'integer'],
             'interest' => ['required', 'integer'],
             'user_class' => ['required', 'string'],

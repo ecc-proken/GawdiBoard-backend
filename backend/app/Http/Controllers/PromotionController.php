@@ -123,7 +123,7 @@ class PromotionController extends Controller
         $fetched_promotions = $fetched_promotions
             ->whereDate('end_date', '>=', date('Y-m-d'))
             ->latest('post_date')
-            ->paginate(30);
+            ->paginate(12);
 
         return new PromotionCollection($fetched_promotions);
     }

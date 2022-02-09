@@ -9,10 +9,12 @@ use App\Http\Requests\GetUserRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Offer;
+use App\Models\UserOffer;
 use App\Models\Work;
 use App\Models\Promotion;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\AppliedOfferCollection;
 use App\Http\Resources\OfferCollection;
 use App\Http\Resources\PromotionCollection;
 use App\Http\Resources\WorkCollection;
@@ -312,6 +314,32 @@ class UserController extends Controller
             ->get();
 
         return new OfferCollection($fetched_user_offers);
+    }
+
+    public function appliedOfferList(GetUserPostedRequest $request)
+    {
+        $student_number = $request->input('student_number');
+        # ログインユーザーのプロフィールでないなら取得しない
+        if ($student_number !== Auth::id()) {
+            return response()->json(
+                [
+                    'message' => 'ログインユーザー以外が応募した募集は取得できません',
+                ],
+                Response::HTTP_FORBIDDEN
+            );
+        }
+
+        $fetched_applied_offers = UserOffer::with([
+            'offers',
+            'offers.tags',
+            'offers.tags.genres',
+            'offers.tags.targets',
+            'offers.users',
+        ])
+            ->where('student_number', '=', $student_number)
+            ->get();
+
+        return new AppliedOfferCollection($fetched_applied_offers);
     }
 
     #ユーザー宣伝一覧
