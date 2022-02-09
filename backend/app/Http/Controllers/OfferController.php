@@ -128,7 +128,7 @@ class OfferController extends Controller
         $fetched_offers = $fetched_offers
             ->whereDate('end_date', '>=', date('Y-m-d'))
             ->latest('post_date')
-            ->paginate(30);
+            ->paginate(12);
 
         return new OfferCollection($fetched_offers);
     }
