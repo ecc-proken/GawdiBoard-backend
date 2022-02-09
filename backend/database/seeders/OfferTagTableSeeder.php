@@ -19,7 +19,7 @@ class OfferTagTableSeeder extends Seeder
         $offers = Offer::all();
 
         foreach ($offers as $offer) {
-            $tags_id = Tag::inRandomOrder()->limit(random_int(1, 10))->get('id');
+            $tags_id = Tag::inRandomOrder()->limit(random_int(2, 4))->get('id');
 
             foreach ($tags_id as $tag_id) {
                 $offer_tag = new OfferTag();

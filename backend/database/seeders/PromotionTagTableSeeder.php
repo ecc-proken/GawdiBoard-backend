@@ -20,7 +20,7 @@ class PromotionTagTableSeeder extends Seeder
         $promotions = Promotion::all();
 
         foreach ($promotions as $promotion) {
-            $tags_id = Tag::inRandomOrder()->limit(random_int(1, 10))->get('id');
+            $tags_id = Tag::inRandomOrder()->limit(random_int(2, 4))->get('id');
 
             foreach ($tags_id as $tag_id) {
                 $promotion_tag = new PromotionTag();
