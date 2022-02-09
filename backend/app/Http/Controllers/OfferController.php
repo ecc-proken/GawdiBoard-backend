@@ -11,6 +11,7 @@ use App\Http\Requests\PostOfferApplyRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Offer;
+use App\Models\UserOffer;
 use App\Http\Resources\OfferResource;
 use App\Http\Resources\OfferCollection;
 use App\Jobs\SendOfferApplyEmail;
@@ -398,6 +399,14 @@ class OfferController extends Controller
             'title' => $fetched_offer->title,
             'email' => $owner_email,
         ];
+
+        $created_user_offer = new UserOffer();
+
+        DB::transaction(function () use ($request, $applicant, $created_user_offer) {
+            $created_user_offer->student_number = $applicant->student_number;
+            $created_user_offer->offer_id = $request->input('offer_id');
+            $created_user_offer->save();
+        });
 
         #メール送信をキューに格納 (送信先, メール情報)
         SendOfferApplyEmail::dispatch($owner_email, $mail_info);
