@@ -29,7 +29,7 @@
  *      description="Success",
  *      @OA\Header(
  *          header="X-XSRF-TOKEN",
- *          description="The number of remaining requests in the period",
+ *          description="Chromeの検証から「Network」-> 「Name」タブの「csrf-cookie」をクリックすると右側にレスポンスヘッダが表示されるので、その中の「XSRF-TOKEN」をコピーする。クッキー文字列の「%3D」は「=」に変更する。",
  *          @OA\Schema( type="string" )
  *      ),
  *      @OA\MediaType(mediaType="application/json")
