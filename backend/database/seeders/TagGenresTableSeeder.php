@@ -16,7 +16,7 @@ class TagGenresTableSeeder extends Seeder
     {
         $arr = ['募集', '作品', '宣伝'];
 
-        foreach($arr as $value){
+        foreach ($arr as $value) {
             $tag_genre = new TagGenre();
 
             $tag_genre->genre_name = $value;
