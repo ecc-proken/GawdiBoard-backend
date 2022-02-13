@@ -316,6 +316,42 @@ class UserController extends Controller
         return new OfferCollection($fetched_user_offers);
     }
 
+    #ユーザー応募済み募集一覧
+    /**
+     * @OA\Get(
+     *  path="/api/user/applied-offer-list",
+     *  summary="ユーザー応募済み募集一覧",
+     *  description="ユーザーが応募した募集一覧を取得する (要ログイン)",
+     *  operationId="getAppliedOfferList",
+     *  tags={"user"},
+     *  @OA\Parameter(ref="#/components/parameters/user_get_offer_list_student_number"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
+     */
     public function appliedOfferList(GetUserPostedRequest $request)
     {
         $student_number = $request->input('student_number');
