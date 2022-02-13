@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Chat extends Model
 {
     use HasFactory;
+    public $timestamps = false;
 }
