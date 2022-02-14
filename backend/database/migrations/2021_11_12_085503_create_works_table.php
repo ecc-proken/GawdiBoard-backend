@@ -15,11 +15,11 @@ class CreateWorksTable extends Migration
     {
         Schema::create('works', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('short_description')->nullable();
-            $table->string('note')->nullable();
+            $table->string('title', 100);
+            $table->string('short_description', 100)->nullable();
+            $table->string('note', 1000)->nullable();
             $table->string('picture')->nullable();
-            $table->string('link')->nullable();
+            $table->string('link', 300)->nullable();
             $table->date('post_date');
             $table->unsignedBigInteger('student_number');
             $table->foreign('student_number')->references('student_number')->on('users')->cascadeOnDelete();

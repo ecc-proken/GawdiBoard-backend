@@ -25,10 +25,10 @@ class StoreOfferRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => ['required', 'string', 'max:50'],
+            'title' => ['required', 'string', 'max:100'],
             'target' => ['nullable', 'string', 'max:255'],
             'job' => ['nullable', 'string', 'max:255'],
-            'note' => ['nullable', 'string', 'max:255'],
+            'note' => ['nullable', 'string', 'max:1000'],
             'picture' => ['nullable', 'url',    'max:255'],
             'link' => ['nullable', 'string', 'max:300'],
             'user_class' => ['required', 'string', 'max:10'],
