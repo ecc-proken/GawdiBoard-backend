@@ -24,7 +24,7 @@ class StorePromotionRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => ['required', 'string', 'max:50'],
+            'title' => ['required', 'string', 'max:100'],
             'note' => ['nullable', 'string', 'max:1000'],
             'picture' => ['nullable', 'url',    'max:255'],
             'link' => ['nullable', 'string', 'max:300'],

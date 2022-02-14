@@ -25,7 +25,7 @@ class StoreWorkRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => ['required', 'string', 'max:50'],
+            'title' => ['required', 'string', 'max:100'],
             'short_description' => ['nullable', 'string', 'max:255'],
             'note' => ['nullable', 'string', 'max:1000'],
             'picture' => ['nullable', 'url', 'max:255'],

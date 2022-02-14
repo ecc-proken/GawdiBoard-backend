@@ -25,7 +25,7 @@ class UpdatePromotionRequest extends FormRequest
     {
         return [
             'promotion_id' => ['required', 'integer'],
-            'title' => ['required', 'string', 'max:50'],
+            'title' => ['required', 'string', 'max:100'],
             'note' => ['present', 'string', 'max:1000'],
             'picture' => ['present', 'url',    'max:255'],
             'link' => ['present', 'string', 'max:300'],
