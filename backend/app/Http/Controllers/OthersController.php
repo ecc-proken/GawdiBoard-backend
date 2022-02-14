@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\GetTagsRequest;
 use App\Http\Requests\StoreFileRequest;
+use App\Http\Requests\ContactRequest;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Tag;
 use \Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\TagCollection;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use App\Jobs\SendContactManagementEmail;
+use App\Jobs\SendInquiryCompletedEmail;
 use Illuminate\Http\Request;
 
 class OthersController extends Controller
@@ -98,9 +102,24 @@ class OthersController extends Controller
      *  ),
      * )
      */
-    public function contact()
+    public function contact(ContactRequest $request)
     {
-        return 'contact';
+        #送信者の情報
+        $sender = Auth::user();
+        $sender_email = $sender->email;
+
+        $mail_info = (object) [];
+        $mail_info = (object) [
+            'student_number' => $sender->student_number,
+            'user_name' => $sender->user_name,
+            'email' => $sender_email,
+            'contact_type' => $request->input('contact_type'),
+            'content' => $request->input('content'),
+        ];
+
+        #メール送信をキューに格納 (送信先, メール情報)
+        SendContactManagementEmail::dispatch($sender_email, $mail_info);
+        SendInquiryCompletedEmail::dispatch('Ggwdi-owner@email.com');
     }
 
     #ファイルアップロード
