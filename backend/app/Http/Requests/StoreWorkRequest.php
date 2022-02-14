@@ -27,7 +27,7 @@ class StoreWorkRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:50'],
             'short_description' => ['nullable', 'string', 'max:255'],
-            'note' => ['nullable', 'string', 'max:255'],
+            'note' => ['nullable', 'string', 'max:1000'],
             'picture' => ['nullable', 'url', 'max:255'],
             'link' => ['nullable', 'string', 'max:300'],
             'work_tag_ids' => ['required', 'array'],

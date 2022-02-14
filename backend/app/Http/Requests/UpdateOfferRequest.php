@@ -29,7 +29,7 @@ class UpdateOfferRequest extends FormRequest
             'title' => ['required', 'string', 'max:50'],
             'target' => ['present', 'string', 'max:255'],
             'job' => ['present', 'string', 'max:255'],
-            'note' => ['present', 'string', 'max:255'],
+            'note' => ['present', 'string', 'max:1000'],
             'picture' => ['present', 'url',    'max:255'],
             'link' => ['present', 'string', 'max:300'],
             'user_class' => ['required', 'string', 'max:10'],

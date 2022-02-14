@@ -28,7 +28,7 @@ class UpdateWorkRequest extends FormRequest
             'work_id' => ['required', 'integer'],
             'title' => ['required', 'string', 'max:50'],
             'short_description' => ['present', 'string', 'max:255'],
-            'note' => ['present', 'string', 'max:255'],
+            'note' => ['present', 'string', 'max:1000'],
             'picture' => ['present', 'url', 'max:255'],
             'link' => ['present', 'string', 'max:300'],
             'work_tag_ids' => ['required', 'array'],
