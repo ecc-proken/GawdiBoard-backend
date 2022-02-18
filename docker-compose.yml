@@ -39,8 +39,8 @@ services:
       dockerfile: ./infra/docker/nginx/Dockerfile
     container_name: 'gawdiboard-web'
     ports:
-      - target: 80
-        published: ${WEB_PORT:-80}
+      - target: 1000
+        published: ${WEB_PORT}
         protocol: tcp
         mode: host
     volumes:
@@ -60,7 +60,7 @@ services:
     container_name: 'gawdiboard-db'
     ports:
       - target: 3306
-        published: ${DB_PORT:-3306}
+        published: ${DB_PORT}
         protocol: tcp
         mode: host
     volumes:
