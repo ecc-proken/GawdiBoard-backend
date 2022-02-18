@@ -187,8 +187,8 @@ class OthersController extends Controller
         $hash = md5($resized_image->__toString());
         $path = "images/{$hash}.jpeg";
 
-        //sftpドライバーのディスクに保存 設定は backend/config/filesystems.php
-        Storage::disk('sftp')->put($path, $resized_image->__toString());
+        //laravelのpublicディレクトリに保存 設定はbackend/config/filesystems.php
+        Storage::disk('public')->put($path, $resized_image->__toString());
 
         return response()->json(
             [
