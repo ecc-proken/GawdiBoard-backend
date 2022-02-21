@@ -97,10 +97,12 @@ cache:
 	@make optimize
 	$(DC) exec app php artisan event:cache
 	$(DC) exec app php artisan view:cache
+	$(DC) exec app php artisan config:cache
 cache-clear:
 	$(DC) exec app composer clear-cache
 	@make optimize-clear
 	$(DC) exec app php artisan event:clear
+	$(DC) exec app php artisan config:clear
 db:
 	$(DC) exec db bash
 sql:
