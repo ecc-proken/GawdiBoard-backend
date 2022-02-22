@@ -27,6 +27,7 @@ class ChatResource extends JsonResource
             'offer_id' => $this->offer_id,
             'chat' => $this->chat,
             'student_number' => $this->student_number,
+            'created_at' => $this->created_at,
         ];
     }
 }
