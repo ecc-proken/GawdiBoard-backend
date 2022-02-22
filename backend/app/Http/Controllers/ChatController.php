@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\GetUserOfferRequest;
 use App\Http\Requests\GetChatsRequest;
 use App\Http\Requests\PostChatsRequest;
+use App\Http\Requests\DestroyChatsRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Chat;
@@ -67,5 +68,17 @@ class ChatController extends Controller
         });
 
         return new ChatResource($created_chat);
+    }
+
+    public function delete(DestroyChatsRequest $request)
+    {
+        DB::transaction(function () use ($request) {
+            $id = $request->input('chat_id');
+
+            $destroy_work = Chat::findOrFail($id);
+            $destroy_work::destroy($id);
+        });
+
+        return http_response_code(); //return http status code 200
     }
 }
