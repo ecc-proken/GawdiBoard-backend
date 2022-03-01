@@ -123,7 +123,7 @@ class PromotionController extends Controller
         $fetched_promotions = $fetched_promotions
             ->whereDate('end_date', '>=', date('Y-m-d'))
             ->latest('post_date')
-            ->paginate(30);
+            ->paginate(12);
 
         return new PromotionCollection($fetched_promotions);
     }
@@ -136,6 +136,7 @@ class PromotionController extends Controller
      *  description="宣伝を投稿する　(要ログイン)",
      *  operationId="postPromotion",
      *  tags={"promotion"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/post_promotion_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -200,6 +201,7 @@ class PromotionController extends Controller
      *  description="投稿された宣伝を編集する (要ログイン)",
      *  operationId="editPromotion",
      *  tags={"promotion"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/edit_promotion_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -268,6 +270,7 @@ class PromotionController extends Controller
      *  description="投稿された宣伝を削除する (要ログイン)",
      *  operationId="destroyOffer",
      *  tags={"promotion"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/destroy_promotion_request_body"),
      *  @OA\Response(
      *      response=401,

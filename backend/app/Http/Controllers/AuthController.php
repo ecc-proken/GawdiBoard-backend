@@ -39,6 +39,10 @@ class AuthController extends Controller
      *      description="不正なエラー",
      *  ),
      *  @OA\Response(
+     *      response=504,
+     *      description="LDAPサーバに接続できなかった",
+     *  ),
+     *  @OA\Response(
      *      response=204,
      *      description="ログインに成功",
      *      @OA\MediaType(mediaType="application/json")

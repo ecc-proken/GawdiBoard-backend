@@ -11,7 +11,7 @@ use App\Http\Requests\PostOfferApplyRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Offer;
-use App\Models\User;
+use App\Models\UserOffer;
 use App\Http\Resources\OfferResource;
 use App\Http\Resources\OfferCollection;
 use App\Jobs\SendOfferApplyEmail;
@@ -128,7 +128,7 @@ class OfferController extends Controller
         $fetched_offers = $fetched_offers
             ->whereDate('end_date', '>=', date('Y-m-d'))
             ->latest('post_date')
-            ->paginate(30);
+            ->paginate(12);
 
         return new OfferCollection($fetched_offers);
     }
@@ -141,6 +141,7 @@ class OfferController extends Controller
      *  description="募集を投稿する　(要ログイン)",
      *  operationId="postOffer",
      *  tags={"offer"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/post_offer_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -173,7 +174,7 @@ class OfferController extends Controller
     {
         $student_number = Auth::id();
         $this->validateUserPostedCount($student_number);
-        
+
         $created_offer = new Offer();
 
         // トランザクションの開始
@@ -207,6 +208,7 @@ class OfferController extends Controller
      *  description="投稿された募集を編集する (要ログイン)",
      *  operationId="editOffer",
      *  tags={"offer"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/edit_offer_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -277,6 +279,7 @@ class OfferController extends Controller
      *  description="投稿された募集を削除する (要ログイン)",
      *  operationId="destroyOffer",
      *  tags={"offer"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/destroy_offer_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -326,6 +329,7 @@ class OfferController extends Controller
      *               自分が投稿した募集に応募しようとした場合403Forbiddenが返却される",
      *  operationId="applyOffer",
      *  tags={"offer"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/apply_offer_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -395,6 +399,14 @@ class OfferController extends Controller
             'title' => $fetched_offer->title,
             'email' => $owner_email,
         ];
+
+        $created_user_offer = new UserOffer();
+
+        DB::transaction(function () use ($request, $applicant, $created_user_offer) {
+            $created_user_offer->student_number = $applicant->student_number;
+            $created_user_offer->offer_id = $request->input('offer_id');
+            $created_user_offer->save();
+        });
 
         #メール送信をキューに格納 (送信先, メール情報)
         SendOfferApplyEmail::dispatch($owner_email, $mail_info);

@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\GetTagsRequest;
 use App\Http\Requests\StoreFileRequest;
+use App\Http\Requests\ContactRequest;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Tag;
 use \Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\TagCollection;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use App\Jobs\SendContactManagementEmail;
+use App\Jobs\SendInquiryCompletedEmail;
 use Illuminate\Http\Request;
 
 class OthersController extends Controller
@@ -69,6 +73,7 @@ class OthersController extends Controller
      *  description="お問い合わせの内容を管理者のメールに送信する。お問い合わせの送信者にも確認メールが送信される。",
      *  operationId="contact",
      *  tags={"contact"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/contact_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -97,9 +102,24 @@ class OthersController extends Controller
      *  ),
      * )
      */
-    public function contact()
+    public function contact(ContactRequest $request)
     {
-        return 'contact';
+        #送信者の情報
+        $sender = Auth::user();
+        $sender_email = $sender->email;
+
+        $mail_info = (object) [];
+        $mail_info = (object) [
+            'student_number' => $sender->student_number,
+            'user_name' => $sender->user_name,
+            'email' => $sender_email,
+            'contact_type' => $request->input('contact_type'),
+            'content' => $request->input('content'),
+        ];
+
+        #メール送信をキューに格納 (送信先, メール情報)
+        SendContactManagementEmail::dispatch($sender_email, $mail_info);
+        SendInquiryCompletedEmail::dispatch('Ggwdi-owner@email.com');
     }
 
     #ファイルアップロード
@@ -110,6 +130,7 @@ class OthersController extends Controller
      *  description="画像データをサーバーにアップロードし、保存された画像のurlを返す。",
      *  operationId="fileUpload",
      *  tags={"file"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/file_upload_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -166,8 +187,8 @@ class OthersController extends Controller
         $hash = md5($resized_image->__toString());
         $path = "images/{$hash}.jpeg";
 
-        //sftpドライバーのディスクに保存 設定は backend/config/filesystems.php
-        Storage::disk('sftp')->put($path, $resized_image->__toString());
+        //laravelのpublicディレクトリに保存 設定はbackend/config/filesystems.php
+        Storage::disk('public')->put($path, $resized_image->__toString());
 
         return response()->json(
             [

@@ -10,10 +10,12 @@ use App\Http\Requests\GetUserRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Offer;
+use App\Models\UserOffer;
 use App\Models\Work;
 use App\Models\Promotion;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\AppliedOfferCollection;
 use App\Http\Resources\OfferCollection;
 use App\Http\Resources\PromotionCollection;
 use App\Http\Resources\WorkCollection;
@@ -30,6 +32,7 @@ class UserController extends Controller
      *  description="ユーザーのプロフィールを登録する",
      *  operationId="userRegist",
      *  tags={"user"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/user_regist_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -61,7 +64,7 @@ class UserController extends Controller
     public function regist(StoreUserProfileRequest $request)
     {
         $registed_user = Auth::user();
-        
+
         # プロフィール登録済みの場合422を返却
         if ($registed_user->registered_flg) {
             return response()->json(
@@ -92,6 +95,7 @@ class UserController extends Controller
      *  description="ユーザーのプロフィールを編集する (要ログイン)",
      *  operationId="userEdit",
      *  tags={"user"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/user_edit_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -122,7 +126,6 @@ class UserController extends Controller
      */
     public function edit(UpdateUserProfileRequest $request)
     {
-
         $updated_user = Auth::user();
 
         # プロフィール登録済みでない場合422を返却
@@ -136,7 +139,7 @@ class UserController extends Controller
         }
 
         // トランザクションの開始
-        DB::transaction(function () use ($request, $updated_user, $student_number) {
+        DB::transaction(function () use ($request, $updated_user) {
             $updated_user->user_name = $request->input('user_name');
             $updated_user->link = $request->input('link');
             $updated_user->self_introduction = $request->input('self_introduction');
@@ -183,7 +186,6 @@ class UserController extends Controller
      */
     public function whoami()
     {
-
         $login_user = Auth::user();
 
         return new UserResource($login_user);
@@ -352,6 +354,68 @@ class UserController extends Controller
             ->get();
 
         return new OfferCollection($fetched_user_offers);
+    }
+
+    #ユーザー応募済み募集一覧
+    /**
+     * @OA\Get(
+     *  path="/api/user/applied-offer-list",
+     *  summary="ユーザー応募済み募集一覧",
+     *  description="ユーザーが応募した募集一覧を取得する (要ログイン)",
+     *  operationId="getAppliedOfferList",
+     *  tags={"user"},
+     *  @OA\Parameter(ref="#/components/parameters/user_get_offer_list_student_number"),
+     *  @OA\Response(
+     *      response=401,
+     *      description="認証されていない",
+     *  ),
+     *  @OA\Response(
+     *      response=400,
+     *      description="クエリパラメータに誤りがある",
+     *  ),
+     * @OA\Response(
+     *      response=403,
+     *      description="アクセスが拒否されている",
+     *  ),
+     * @OA\Response(
+     *      response=422,
+     *      description="セマンティックエラーにより、処理を実行できなかった",
+     *  ),
+     * @OA\Response(
+     *      response=500,
+     *      description="不正なエラー",
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\MediaType(mediaType="application/json")
+     *  ),
+     * )
+     */
+    public function appliedOfferList(GetUserPostedRequest $request)
+    {
+        $student_number = $request->input('student_number');
+        # ログインユーザーのプロフィールでないなら取得しない
+        if ($student_number !== Auth::id()) {
+            return response()->json(
+                [
+                    'message' => 'ログインユーザー以外が応募した募集は取得できません',
+                ],
+                Response::HTTP_FORBIDDEN
+            );
+        }
+
+        $fetched_applied_offers = UserOffer::with([
+            'offers',
+            'offers.tags',
+            'offers.tags.genres',
+            'offers.tags.targets',
+            'offers.users',
+        ])
+            ->where('student_number', '=', $student_number)
+            ->get();
+
+        return new AppliedOfferCollection($fetched_applied_offers);
     }
 
     #ユーザー宣伝一覧

@@ -19,7 +19,7 @@ class WorkTagTableSeeder extends Seeder
         $works = Work::all();
 
         foreach ($works as $work) {
-            $tags_id = Tag::inRandomOrder()->limit(random_int(1, 10))->get('id');
+            $tags_id = Tag::inRandomOrder()->limit(random_int(2, 4))->get('id');
 
             foreach ($tags_id as $tag_id) {
                 $work_tag = new WorkTag();

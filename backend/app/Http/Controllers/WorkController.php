@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Work;
-use App\Models\User;
 
 use App\Http\Requests\GetWorkRequest;
 use App\Http\Requests\GetWorksRequest;
@@ -127,7 +126,7 @@ class WorkController extends Controller
         // page番号 * 30件のデータを最新順で取得
         $fetched_works = $fetched_works
             ->latest('post_date')
-            ->paginate(30);
+            ->paginate(12);
 
         return new WorkCollection($fetched_works);
     }
@@ -140,6 +139,7 @@ class WorkController extends Controller
      *  description="作品を投稿する　(要ログイン)",
      *  operationId="postWork",
      *  tags={"work"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/post_work_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -199,6 +199,7 @@ class WorkController extends Controller
      *  description="投稿された作品を編集する (要ログイン)",
      *  operationId="editWork",
      *  tags={"work"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/edit_work_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -266,6 +267,7 @@ class WorkController extends Controller
      *  description="投稿された作品を削除する (要ログイン)",
      *  operationId="destroyWork",
      *  tags={"work"},
+     *  security={{"bearer_token":{}}},
      *  @OA\RequestBody(ref="#/components/requestBodies/destroy_work_request_body"),
      *  @OA\Response(
      *      response=401,
@@ -304,6 +306,6 @@ class WorkController extends Controller
             $destroy_work::destroy($id);
         });
 
-        return http_response_code();//return http status code 200
+        return http_response_code(); //return http status code 200
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostOfferApplyRequest extends FormRequest
+class ContactRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class PostOfferApplyRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -24,10 +24,8 @@ class PostOfferApplyRequest extends FormRequest
     public function rules()
     {
         return [
-            'offer_id' => ['required', 'integer'],
-            'interest' => ['required', 'integer'],
-            'user_class' => ['required', 'string'],
-            'message' => ['required', 'string'],
+            'contact_type' => ['required', 'string', 'max:20'],
+            'content' => ['required', 'string', 'max:255'],
         ];
     }
 }

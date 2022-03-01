@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOffersTable extends Migration
+class CreateChatsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,13 @@ class CreateOffersTable extends Migration
      */
     public function up()
     {
-        Schema::create('offers', function (Blueprint $table) {
+        Schema::create('chats', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 100);
-            $table->string('target')->nullable();
-            $table->string('job')->nullable();
-            $table->string('note', 1000)->nullable();
-            $table->string('picture')->nullable();
-            $table->string('link', 300)->nullable();
-            $table->date('post_date');
-            $table->date('end_date');
             $table->unsignedBigInteger('student_number');
             $table->foreign('student_number')->references('student_number')->on('users')->cascadeOnDelete();
-            $table->string('user_class');
+            $table->foreignId('offer_id')->constrained()->cascadeOnDelete();
+            $table->string('chat')->nullable();
+            $table->timestamp('created_at');
         });
     }
 
@@ -36,6 +30,6 @@ class CreateOffersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('offers');
+        Schema::dropIfExists('chats');
     }
 }

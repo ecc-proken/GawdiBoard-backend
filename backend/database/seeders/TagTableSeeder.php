@@ -17,40 +17,45 @@ class TagTableSeeder extends Seeder
     public function run()
     {
         $array = [
-            "IT" => [
-                'とりあえずIT科募集', 
-                'モバイルアプリエンジニア募集', 
-                'フロントエンジニア募集', 
-                'バックエンドエンジニア募集', 
-                'インフラエンジニア募集', 
+            'IT' => [
+                'とりあえずIT科',
+                'モバイルアプリエンジニア',
+                'フロントエンジニア',
+                'バックエンドエンジニア',
+                'インフラエンジニア',
             ],
-            "GAME" => [
-                'とりあえずゲーム科募集',
-                'アプリケーションプログラマー募集',
-                'エンジンプログラマー募集',
-                'プランナー募集',
-                'レベルデザイナー募集',
-                'タスクマネジメント募集',
-                'ツールプログラマー募集',
-                'ゲームグラフィックデザイナー募集',
+            'GAME' => [
+                'とりあえずゲーム科',
+                'アプリケーションプログラマー',
+                'エンジンプログラマー',
+                'プランナー',
+                'レベルデザイナー',
+                'タスクマネジメント',
+                'ツールプログラマー',
+                'ゲームグラフィックデザイナー',
             ],
-            "WEB" => [
-                'とりあえずWEB科募集',
-                'UIできる人募集',
-                'UXできる人募集',
-                'WEBデザイナー募集',
-                'グラフィックデザイナー募集',
-                '動画作れる人募集',
+            'WEB' => [
+                'とりあえずWEB科',
+                'UIできる人',
+                'UXできる人',
+                'WEBデザイナー',
+                'グラフィックデザイナー',
+                '動画作れる人',
+            ],
+            '全体' => [
+                '大会メンバー募集',
+                'イベントスタッフ募集',
+                'その他',
             ],
 
         ];
 
-        $offer_id = TagGenre::where("genre_name", "募集")->first('id')->id;
-        
-        foreach($array as $key => $arr){
+        $offer_id = TagGenre::where('genre_name', '募集')->first('id')->id;
+
+        foreach ($array as $key => $arr) {
             $tag_target_id = TagTarget::where('target_name', $key)->first('id')->id;
 
-            foreach($arr as $key => $value){
+            foreach ($arr as $key => $value) {
                 $tag = new Tag();
 
                 $tag->tag_name = $value;

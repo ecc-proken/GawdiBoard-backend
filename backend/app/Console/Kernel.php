@@ -40,8 +40,6 @@ class Kernel extends ConsoleKernel
             ->environments(['staging', 'production'])
             // バックグラウンド実行
             ->runInBackground();
-        // 失敗時にメールを送信する。
-        // ->emailOutputOnFailure('akisu1016@gmail.com');
 
         // 毎日深夜0時掲載期間が終了した宣伝を削除
         $schedule->command('promotion:delete')
@@ -50,8 +48,6 @@ class Kernel extends ConsoleKernel
             ->environments(['staging', 'production'])
             // バックグラウンド実行
             ->runInBackground();
-        // 失敗時にメールを送信する。
-        // ->emailOutputOnFailure('sample@gmail.com');
 
         // 毎日11時に掲載終了3日前と当日の投稿主にメールを送信
         $schedule->command('send:delete-email')
@@ -60,8 +56,6 @@ class Kernel extends ConsoleKernel
             ->environments(['staging', 'production'])
             // バックグラウンド実行
             ->runInBackground();
-        // 失敗時にメールを送信する。
-        // ->emailOutputOnFailure('sample@gmail.com');
 
         // 年度始め(4月1日)に7年経過ユーザーを削除
         $schedule->command('user:delete')
@@ -70,8 +64,6 @@ class Kernel extends ConsoleKernel
             ->environments(['staging', 'production'])
             // バックグラウンド実行
             ->runInBackground();
-        // 失敗時にメールを送信する。
-        // ->emailOutputOnFailure('sample@gmail.com');
     }
 
     /**
