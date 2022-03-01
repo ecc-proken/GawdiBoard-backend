@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreEmailRequest;
 use App\Http\Requests\StoreUserProfileRequest;
 use App\Http\Requests\UpdateUserProfileRequest;
 use App\Http\Requests\GetUserPostedRequest;
@@ -16,6 +17,7 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\OfferCollection;
 use App\Http\Resources\PromotionCollection;
 use App\Http\Resources\WorkCollection;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -127,7 +129,7 @@ class UserController extends Controller
         if ($updated_user->registered_flg == false) {
             return response()->json(
                 [
-                    'message' => 'User already exists',
+                    'message' => 'User is not registered',
                 ],
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
@@ -242,16 +244,54 @@ class UserController extends Controller
         return $user;
     }
 
-    #TODO : ユーザーメールアドレス登録APIは出来次第追加
-    public function registEmail()
+    public function registEmail(StoreEmailRequest $request)
     {
-        return 'regist-email';
+        $email_registed_user = Auth::user();
+
+        // メールアドレス登録済みの場合422を返却
+        if (isset($email_registed_user->email)) {
+            return response()->json(
+                [
+                    'message' => 'Email already registed',
+                ],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        // トランザクションの開始
+        DB::transaction(function () use ($request, $email_registed_user) {
+            $email_registed_user->email = $request->input('email');
+            $email_registed_user->save();
+        });
+
+        event(new Registered($email_registed_user));
+
+        return new UserResource($email_registed_user);
     }
 
-    #TODO : ユーザーメールアドレス編集APIは出来次第追加
     public function editEmail()
     {
-        return 'delete';
+        $email_edited_user = Auth::user();
+
+        // メールアドレス登録済みでない場合422を返却
+        if (is_null($email_edited_user->email_verified_at)) {
+            return response()->json(
+                [
+                    'message' => 'Email is not registered',
+                ],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        // トランザクションの開始
+        DB::transaction(function () use ($request, $email_edited_user) {
+            $email_edited_user->email = $request->input('email');
+            $email_edited_user->save();
+        });
+
+        event(new Registered($email_edited_user));
+
+        return new UserResource($email_registed_user);
     }
 
     #ユーザー募集一覧
