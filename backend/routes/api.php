@@ -58,6 +58,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('work-list', 'UserController@workList')->name('work-list');
     });
 
+    // チャットAPIグル-プ
+    Route::group(['prefix' => 'chat', 'as' => 'chat.'], function () {
+        Route::post('offer-list', 'ChatController@offerList')->name('offer-list');
+        Route::post('list', 'ChatController@list')->name('list');
+        Route::post('post', 'ChatController@post')->name('post');
+        Route::post('delete', 'ChatController@delete')->name('delete');
+    });
+
     // その他
     Route::post('/contact', 'OthersController@contact')->name('contact');
     Route::post('/file-upload', 'OthersController@fileUpload')->name('file-upload');

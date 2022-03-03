@@ -28,6 +28,9 @@ class DatabaseSeeder extends Seeder
 
             WorkTableSeeder::class,
             WorkTagTableSeeder::class,
+
+            ChatsTableSeeder::class,
+            UserOffersTableSeeder::class,
         ]);
     }
 }
