@@ -1,6 +1,9 @@
 <?php
 
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VerifyEmailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +22,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['prefix' => 'offer', 'as' => 'offer.'], function () {
         Route::get('single', 'OfferController@single')->name('single');
         Route::get('list', 'OfferController@list')->name('list');
-        Route::post('post', 'OfferController@post')->name('post');
+        Route::post('post', 'OfferController@post')->name('post')->middleware('verified');
         Route::post('edit', 'OfferController@edit')->name('edit');
         Route::post('delete', 'OfferController@delete')->name('delete');
-        Route::post('apply', 'OfferController@apply')->name('apply');
+        Route::post('apply', 'OfferController@apply')->name('apply')->middleware('verified');
     });
 
     // 宣伝APIグループ
@@ -76,3 +79,14 @@ Route::group(['prefix' => 'work', 'as' => 'work.'], function () {
 
 // その他
 Route::get('/tag-list', 'OthersController@tagList')->name('tag-list');
+
+// 確認リンクを処理するルート
+Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('verification.verify');
+
+// 確認リンクを再送信するルート
+Route::post('/email/verify/resend', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth:api', 'throttle:6,1'])->name('verification.send');

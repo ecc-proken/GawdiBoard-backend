@@ -29,6 +29,7 @@ class UserResource extends JsonResource
             'link' => $this->link,
             'self_introduction' => $this->self_introduction,
             'registered_flg' => $this->registered_flg,
+            'icon' => $this->icon,
             'posted_count' => $this->posted_count,
         ];
     }
