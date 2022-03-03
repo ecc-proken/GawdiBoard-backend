@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('link')->nullable();
             $table->string('self_introduction')->nullable();
             $table->boolean('registered_flg')->default(false);
+            $table->string('picture');
             $table->timestamps();
             $table->dropColumn('updated_at');
         });

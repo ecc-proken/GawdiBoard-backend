@@ -80,6 +80,7 @@ class UserController extends Controller
             $registed_user->user_name = $request->input('user_name');
             $registed_user->link = $request->input('link');
             $registed_user->self_introduction = $request->input('self_introduction');
+            $registed_user->icon = $request->input('icon');
             $registed_user->registered_flg = true;
             $registed_user->save();
         });
@@ -143,6 +144,7 @@ class UserController extends Controller
             $updated_user->user_name = $request->input('user_name');
             $updated_user->link = $request->input('link');
             $updated_user->self_introduction = $request->input('self_introduction');
+            $updated_user->icon = $request->input('icon');
             $updated_user->save();
         });
 

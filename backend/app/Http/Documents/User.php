@@ -30,6 +30,12 @@
  *           example="私はECC太郎です。ITのことなら全部できます。",
  *           description="自己紹介",
  *       ),
+ *      @OA\Property(
+ *           property="icon",
+ *           type="string",
+ *           example="backend/public/picture/icon.png",
+ *           description="ユーザーのアイコン",
+ *       ),
  *   ),
  * ),
  */
@@ -58,6 +64,11 @@
  *           example="私はECC花子になりました。やっぱりITできません。",
  *           description="自己紹介",
  *       ),
+ *       @OA\Property(
+ *           property="icon",
+ *           type="string",
+ *           example="backend/public/picture/icon.png",
+ *           description="ユーザーのアイコン",
  *   ),
  * ),
  */
