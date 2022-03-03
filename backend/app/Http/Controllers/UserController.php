@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreEmailRequest;
+use App\Http\Requests\UpdateEmailRequest;
 use App\Http\Requests\StoreUserProfileRequest;
 use App\Http\Requests\UpdateUserProfileRequest;
 use App\Http\Requests\GetUserPostedRequest;
@@ -273,7 +274,7 @@ class UserController extends Controller
         return new UserResource($email_registed_user);
     }
 
-    public function editEmail()
+    public function editEmail(UpdateEmailRequest $request)
     {
         $email_edited_user = Auth::user();
 
@@ -295,7 +296,7 @@ class UserController extends Controller
 
         event(new Registered($email_edited_user));
 
-        return new UserResource($email_registed_user);
+        return new UserResource($email_edited_user);
     }
 
     #ユーザー募集一覧
